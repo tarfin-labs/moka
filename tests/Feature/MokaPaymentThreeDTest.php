@@ -4,7 +4,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
 use Tarfin\Moka\Enums\MokaPaymentStatus;
-use Tarfin\Moka\Exceptions\MokaException;
+use Tarfin\Moka\Exceptions\MokaPaymentThreeDException;
 use Tarfin\Moka\Services\Payment\MokaPaymentThreeD;
 
 beforeEach(function () {
@@ -138,8 +138,8 @@ it('throws exception when payment creation fails', function () {
         cvc: '123',
         returnUrl: 'https://your-site.com/callback',
         software: 'Tarfin'
-    ))->toThrow(function (MokaException $exception) {
-        expect($exception->getMessage())->toBe('')
+    ))->toThrow(function (MokaPaymentThreeDException $exception) {
+        expect($exception->getMessage())->toBe(__('moka::payment-three-d.PaymentDealer.CheckCardInfo.InvalidCardInfo'))
             ->and($exception->getCode())->toBe('PaymentDealer.CheckCardInfo.InvalidCardInfo');
     });
 });
@@ -212,7 +212,7 @@ it('stores failed payment data in database when enabled in config', function () 
             software: 'Tarfin',
             otherTrxCode: $otherTrxCode
         );
-    } catch (MokaException $e) {
+    } catch (MokaPaymentThreeDException $e) {
         $this->assertDatabaseHas('moka_payments', [
             'other_trx_code' => $otherTrxCode,
             'amount' => 100.00,
@@ -251,7 +251,7 @@ it('does not store failed payment data in database when disabled in config', fun
             software: 'Tarfin',
             otherTrxCode: $otherTrxCode
         );
-    } catch (MokaException $e) {
+    } catch (MokaPaymentThreeDException $e) {
         $this->assertDatabaseMissing('moka_payments', [
             'other_trx_code' => $otherTrxCode,
         ]);

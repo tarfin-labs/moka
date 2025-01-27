@@ -6,7 +6,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Str;
 use Tarfin\Moka\Enums\MokaPaymentStatus;
-use Tarfin\Moka\Exceptions\MokaException;
+use Tarfin\Moka\Exceptions\MokaPaymentThreeDException;
 use Tarfin\Moka\Models\MokaPayment;
 use Tarfin\Moka\MokaRequest;
 
@@ -80,7 +80,7 @@ class MokaPaymentThreeD extends MokaRequest
                 ]);
             }
 
-            throw new MokaException(
+            throw new MokaPaymentThreeDException(
                 $response['ResultMessage'],
                 $response['ResultCode']
             );
