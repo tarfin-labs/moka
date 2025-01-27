@@ -4,6 +4,7 @@ namespace Tarfin\Moka;
 
 use Tarfin\Moka\Services\Information\MokaBinInquiry;
 use Tarfin\Moka\Services\Information\MokaPaymentAmount;
+use Tarfin\Moka\Services\Information\MokaPaymentTable;
 use Tarfin\Moka\Services\Payment\MokaPaymentThreeD;
 
 class MokaClient
@@ -21,5 +22,10 @@ class MokaClient
     public function paymentAmount(): MokaPaymentAmount
     {
         return new MokaPaymentAmount;
+    }
+
+    public function paymentTable(): MokaPaymentTable
+    {
+        return new MokaPaymentTable;
     }
 }

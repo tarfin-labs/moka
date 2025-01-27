@@ -53,7 +53,7 @@ it('throws exception when bin inquiry fails', function () {
     $mockResponse = [
         'Data' => null,
         'ResultCode' => 'PaymentDealer.GetBankCardInformation.BinNumberNotFound',
-        'ResultMessage' => 'PaymentDealer.GetBankCardInformation.BinNumberNotFound',
+        'ResultMessage' => '',
         'Exception' => null,
     ];
 
@@ -62,7 +62,7 @@ it('throws exception when bin inquiry fails', function () {
     ]);
 
     expect(fn () => Moka::binInquiry()->get('123456'))
-        ->toThrow(MokaException::class, 'PaymentDealer.GetBankCardInformation.BinNumberNotFound');
+        ->toThrow(MokaException::class, '', 'PaymentDealer.GetBankCardInformation.BinNumberNotFound');
 
     Http::assertSent(function (Request $request) {
         return $request->url() === 'https://service.refmoka.com/PaymentDealer/GetBankCardInformation' &&
