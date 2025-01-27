@@ -174,10 +174,9 @@ The service will return an array containing detailed payment information:
         'ProductCategory' => 'Bireysel'
     ]
 ]
+```
 
-```
 If there's an error with the calculation, the service will throw a `MokaException` with the error code and message.
-```
 
 ### Storing Failed Payments
 
@@ -219,6 +218,76 @@ The BIN inquiry service provides information about:
 - Product category and group name
 
 If the BIN inquiry fails, a `MokaException` will be thrown with the error message and code from Moka.
+
+### Payment Table
+
+You can get payment table information including installment options and commission rates using the `MokaPaymentTable` service:
+
+```php
+use Tarfin\Moka\Facades\Moka;
+
+// With minimal parameters
+$result = Moka::paymentTable()->calculate(
+    amount: 100.00
+);
+
+// With BIN number
+$result = Moka::paymentTable()->calculate(
+    amount: 100.00,
+    binNumber: '526911'
+);
+
+// With all parameters
+$result = Moka::paymentTable()->calculate(
+    amount: 100.00,
+    binNumber: '526911',
+    isThreeD: 0,
+    isIncludedCommissionAmount: 0,
+    currency: 'TL',
+);
+```
+
+The service will return an array containing available installment options and commission rates:
+
+```php
+'Data' => [
+    'BankPaymentInstallmentInfoList' => [
+        [
+            'BankInfoName' => 'GENEL',
+            'PaymentInstallmentInfoList' => [
+                [
+                    'CommissionType' => 'CreditCard',
+                    'InstallmentNumber' => 1,
+                    'DealerCommissionRate' => 2.2,
+                    'DealerCommissionFixedAmount' => 0,
+                    'DealerCommissionAmount' => 2.2,
+                    'PerInstallmentAmount' => 100,
+                    'Amount' => 100,
+                ],
+                // ... more installment options
+            ],
+        ],
+        [
+            'BankInfoName' => 'AXESS',
+            'PaymentInstallmentInfoList' => [
+                [
+                    'CommissionType' => 'CreditCard',
+                    'InstallmentNumber' => 1,
+                    'DealerCommissionRate' => 3,
+                    'DealerCommissionFixedAmount' => 0,
+                    'DealerCommissionAmount' => 3,
+                    'PerInstallmentAmount' => 100,
+                    'Amount' => 100,
+                ],
+                // ... more installment options
+            ],
+        ],
+    ],
+    'ResultCode' => 'Success',
+    'ResultMessage' => '',
+    'Exception' => null,
+]
+```
 
 ## Testing
 
