@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Http;
-use Tarfin\Moka\Exceptions\MokaException;
+use Tarfin\Moka\Exceptions\MokaPaymentAmountException;
 use Tarfin\Moka\Services\Information\MokaPaymentAmount;
 
 beforeEach(function () {
@@ -177,8 +177,8 @@ it('throws exception when group revenue parameters are invalid', function () {
     expect(fn () => $paymentAmount->calculate(
         binNumber: '555555',
         amount: 100.00
-    ))->toThrow(function (MokaException $exception) {
-        expect($exception->getMessage())->toBe('')
+    ))->toThrow(function (MokaPaymentAmountException $exception) {
+        expect($exception->getMessage())->toBe(__('moka::payment-amount.PaymentDealer.DoCalcPaymentAmount.BothGroupRevenueRateAndGroupRevenueAmountMustBeZero'))
             ->and($exception->getCode())->toBe('PaymentDealer.DoCalcPaymentAmount.BothGroupRevenueRateAndGroupRevenueAmountMustBeZero');
     });
 });

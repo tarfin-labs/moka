@@ -3,6 +3,7 @@
 use Illuminate\Http\Client\Request;
 use Illuminate\Support\Facades\Http;
 use Tarfin\Moka\Exceptions\MokaException;
+use Tarfin\Moka\Exceptions\MokaBinInquiryException;
 use Tarfin\Moka\Facades\Moka;
 
 beforeEach(function () {
@@ -62,7 +63,10 @@ it('throws exception when bin inquiry fails', function () {
     ]);
 
     expect(fn () => Moka::binInquiry()->get('123456'))
-        ->toThrow(MokaException::class, '', 'PaymentDealer.GetBankCardInformation.BinNumberNotFound');
+        ->toThrow(function (MokaBinInquiryException $exception) {
+            expect($exception->getMessage())->toBe(__('moka::bin-inquiry.PaymentDealer.GetBankCardInformation.BinNumberNotFound'))
+                ->and($exception->getCode())->toBe('PaymentDealer.GetBankCardInformation.BinNumberNotFound');
+        });
 
     Http::assertSent(function (Request $request) {
         return $request->url() === 'https://service.refmoka.com/PaymentDealer/GetBankCardInformation' &&

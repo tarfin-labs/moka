@@ -2,7 +2,7 @@
 
 namespace Tarfin\Moka\Services\Information;
 
-use Tarfin\Moka\Exceptions\MokaException;
+use Tarfin\Moka\Exceptions\MokaBinInquiryException;
 use Tarfin\Moka\MokaRequest;
 
 class MokaBinInquiry extends MokaRequest
@@ -20,7 +20,7 @@ class MokaBinInquiry extends MokaRequest
         $response = $this->sendRequest(self::ENDPOINT_BIN_INQUIRY, $requestData);
 
         if ($response['ResultCode'] !== 'Success') {
-            throw new MokaException(
+            throw new MokaBinInquiryException(
                 $response['ResultMessage'],
                 $response['ResultCode']
             );
