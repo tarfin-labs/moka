@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Http;
-use Tarfin\Moka\Exceptions\MokaException;
+use Tarfin\Moka\Exceptions\MokaPaymentTableException;
 use Tarfin\Moka\Facades\Moka;
 
 beforeEach(function () {
@@ -679,8 +679,8 @@ it('throws exception when authentication fails', function () {
     expect(fn () => Moka::paymentTable()->calculate(
         amount: 100.00,
         binNumber: '555555'
-    ))->toThrow(function (MokaException $exception) {
-        expect($exception->getMessage())->toBe('')
+    ))->toThrow(function (MokaPaymentTableException $exception) {
+        expect($exception->getMessage())->toBe(__('moka::payment-table.PaymentDealer.CheckPaymentDealerAuthentication.InvalidAccount'))
             ->and($exception->getCode())->toBe('PaymentDealer.CheckPaymentDealerAuthentication.InvalidAccount');
     });
 });

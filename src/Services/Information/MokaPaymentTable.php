@@ -2,16 +2,13 @@
 
 namespace Tarfin\Moka\Services\Information;
 
-use Tarfin\Moka\Exceptions\MokaException;
+use Tarfin\Moka\Exceptions\MokaPaymentTableException;
 use Tarfin\Moka\MokaRequest;
 
 class MokaPaymentTable extends MokaRequest
 {
     private const ENDPOINT_CALC_PAYMENT_TABLE = '/PaymentDealer/DoCalcPaymentTable';
 
-    /**
-     * @throws \Tarfin\Moka\Exceptions\MokaException
-     */
     public function calculate(
         float $amount,
         string $binNumber = '',
@@ -32,7 +29,7 @@ class MokaPaymentTable extends MokaRequest
         $response = $this->sendRequest(self::ENDPOINT_CALC_PAYMENT_TABLE, $requestData);
 
         if ($response['ResultCode'] !== 'Success') {
-            throw new MokaException(
+            throw new MokaPaymentTableException(
                 $response['ResultMessage'],
                 $response['ResultCode']
             );
