@@ -206,6 +206,9 @@ it('stores payment data in database when payment is successful', function () {
         'result_code' => 'Success',
         'result_message' => '',
         'three_d' => 1,
+        'card_holder' => 'John Doe',
+        'card_type' => 'MASTER',
+        'card_last_four' => '5555',
     ]);
 });
 
@@ -243,8 +246,11 @@ it('stores failed payment data in database when enabled in config', function () 
             'amount' => 100.00,
             'status' => MokaPaymentStatus::FAILED->value,
             'result_code' => 'PaymentDealer.CheckCardInfo.InvalidCardInfo',
-            'result_message' => '',
+            'result_message' => __('moka::payment-three-d.PaymentDealer.CheckCardInfo.InvalidCardInfo'),
             'three_d' => 1,
+            'card_holder' => 'John Doe',
+            'card_type' => 'MASTER',
+            'card_last_four' => '5555',
         ]);
     }
 });
