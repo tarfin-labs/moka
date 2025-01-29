@@ -14,6 +14,9 @@ class MokaPayment extends Model
     protected $fillable = [
         'other_trx_code',
         'trx_code',
+        'card_holder',
+        'card_type',
+        'card_last_four',
         'code_for_hash',
         'status',
         'amount',

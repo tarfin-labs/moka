@@ -13,6 +13,9 @@ return new class extends Migration
             $table->id();
             $table->string('other_trx_code');
             $table->string('trx_code')->nullable();
+            $table->string('card_holder')->nullable();
+            $table->string('card_type')->nullable();
+            $table->string('card_last_four', 4)->nullable();
             $table->string('code_for_hash')->nullable();
             $table->unsignedTinyInteger('status')->default(MokaPaymentStatus::PENDING->value);
             $table->decimal('amount', 10, 2);

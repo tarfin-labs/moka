@@ -15,11 +15,29 @@ beforeEach(function () {
         'moka.check_key' => 'test_check_key',
         'moka.sandbox_mode' => true,
     ]);
+
+    $this->mockCardInformation = [
+        'ResultCode' => 'Success',
+        'ResultMessage' => '',
+        'Data' => [
+            'BankName' => 'FİNANSBANK',
+            'BankCode' => '111',
+            'BinNumber' => '526911',
+            'CardName' => '',
+            'CardType' => 'MASTER',
+            'CreditType' => 'CreditCard',
+            'CardLogo' => 'https://cdn.moka.com/Content/BankLogo/CARDFINANS.png',
+            'CardTemplate' => 'https://cdn.moka.com/Content/BankCardTemplate/FINANS-MASTER-CREDIT.png',
+            'ProductCategory' => 'Bireysel',
+            'GroupName' => 'CARDFINANS',
+        ],
+        'Exception' => null,
+    ];
 });
 
 it('can create a 3D secure payment request with all parameters', function () {
     Http::fake([
-        'service.refmoka.com/*' => Http::response([
+        'service.refmoka.com/PaymentDealer/DoDirectPaymentThreeD' => Http::response([
             'ResultCode' => 'Success',
             'ResultMessage' => '',
             'Exception' => null,
@@ -28,6 +46,7 @@ it('can create a 3D secure payment request with all parameters', function () {
                 'CodeForHash' => 'test-hash-code',
             ],
         ]),
+        'service.refmoka.com/PaymentDealer/GetBankCardInformation' => Http::response($this->mockCardInformation),
     ]);
 
     $payment = app(MokaPaymentThreeD::class);
@@ -53,7 +72,8 @@ it('can create a 3D secure payment request with all parameters', function () {
     );
 
     Http::assertSent(function ($request) use ($otherTrxCode) {
-        return $request['PaymentDealerAuthentication']['DealerCode'] === 'test_dealer'
+        return $request->url() === 'https://service.refmoka.com/PaymentDealer/DoDirectPaymentThreeD'
+            && $request['PaymentDealerAuthentication']['DealerCode'] === 'test_dealer'
             && $request['PaymentDealerAuthentication']['Username'] === 'test_user'
             && $request['PaymentDealerAuthentication']['Password'] === 'test_pass'
             && $request['PaymentDealerRequest']['OtherTrxCode'] === $otherTrxCode
@@ -76,7 +96,7 @@ it('can create a 3D secure payment request with all parameters', function () {
 
 it('can create a 3D secure payment request with minimal parameters', function () {
     Http::fake([
-        'https://service.refmoka.com/PaymentDealer/DoDirectPaymentThreeD' => Http::response([
+        'service.refmoka.com/PaymentDealer/DoDirectPaymentThreeD' => Http::response([
             'ResultCode' => 'Success',
             'ResultMessage' => '',
             'Exception' => null,
@@ -85,6 +105,7 @@ it('can create a 3D secure payment request with minimal parameters', function ()
                 'CodeForHash' => 'test-hash-code',
             ],
         ]),
+        'service.refmoka.com/PaymentDealer/GetBankCardInformation' => Http::response($this->mockCardInformation),
     ]);
 
     $payment = app(MokaPaymentThreeD::class);
@@ -99,7 +120,8 @@ it('can create a 3D secure payment request with minimal parameters', function ()
     );
 
     Http::assertSent(function ($request) {
-        return $request['PaymentDealerRequest']['InstallmentNumber'] === 1
+        return $request->url() === 'https://service.refmoka.com/PaymentDealer/DoDirectPaymentThreeD'
+            && $request['PaymentDealerRequest']['InstallmentNumber'] === 1
             && $request['PaymentDealerRequest']['Currency'] === 'TL'
             && $request['PaymentDealerRequest']['RedirectType'] === 1
             && $request['PaymentDealerRequest']['Language'] === 'TR'
@@ -119,12 +141,13 @@ it('can create a 3D secure payment request with minimal parameters', function ()
 
 it('throws exception when payment creation fails', function () {
     Http::fake([
-        'https://service.refmoka.com/PaymentDealer/DoDirectPaymentThreeD' => Http::response([
+        'service.refmoka.com/PaymentDealer/DoDirectPaymentThreeD' => Http::response([
             'ResultCode' => 'PaymentDealer.CheckCardInfo.InvalidCardInfo',
             'ResultMessage' => '',
             'Data' => null,
             'Exception' => null,
         ]),
+        'service.refmoka.com/PaymentDealer/GetBankCardInformation' => Http::response($this->mockCardInformation),
     ]);
 
     $payment = app(MokaPaymentThreeD::class);
@@ -146,7 +169,7 @@ it('throws exception when payment creation fails', function () {
 
 it('stores payment data in database when payment is successful', function () {
     Http::fake([
-        'https://service.refmoka.com/PaymentDealer/DoDirectPaymentThreeD' => Http::response([
+        'service.refmoka.com/PaymentDealer/DoDirectPaymentThreeD' => Http::response([
             'ResultCode' => 'Success',
             'ResultMessage' => '',
             'Exception' => null,
@@ -155,6 +178,7 @@ it('stores payment data in database when payment is successful', function () {
                 'CodeForHash' => 'test-hash-code',
             ],
         ]),
+        'service.refmoka.com/PaymentDealer/GetBankCardInformation' => Http::response($this->mockCardInformation),
     ]);
 
     $payment = app(MokaPaymentThreeD::class);
@@ -189,12 +213,13 @@ it('stores failed payment data in database when enabled in config', function () 
     config(['moka.store_failed_payments' => true]);
 
     Http::fake([
-        'https://service.refmoka.com/PaymentDealer/DoDirectPaymentThreeD' => Http::response([
+        'service.refmoka.com/PaymentDealer/DoDirectPaymentThreeD' => Http::response([
             'ResultCode' => 'PaymentDealer.CheckCardInfo.InvalidCardInfo',
             'ResultMessage' => '',
             'Data' => null,
             'Exception' => null,
         ]),
+        'service.refmoka.com/PaymentDealer/GetBankCardInformation' => Http::response($this->mockCardInformation),
     ]);
 
     $payment = app(MokaPaymentThreeD::class);
@@ -228,12 +253,13 @@ it('does not store failed payment data in database when disabled in config', fun
     config(['moka.store_failed_payments' => false]);
 
     Http::fake([
-        'https://service.refmoka.com/PaymentDealer/DoDirectPaymentThreeD' => Http::response([
+        'service.refmoka.com/PaymentDealer/DoDirectPaymentThreeD' => Http::response([
             'ResultCode' => 'PaymentDealer.CheckCardInfo.InvalidCardInfo',
             'ResultMessage' => '',
             'Data' => null,
             'Exception' => null,
         ]),
+        'service.refmoka.com/PaymentDealer/GetBankCardInformation' => Http::response($this->mockCardInformation),
     ]);
 
     $payment = app(MokaPaymentThreeD::class);
@@ -260,7 +286,7 @@ it('does not store failed payment data in database when disabled in config', fun
 
 it('can create a 3D secure payment request with buyer information', function () {
     Http::fake([
-        'service.refmoka.com/*' => Http::response([
+        'service.refmoka.com/PaymentDealer/DoDirectPaymentThreeD' => Http::response([
             'ResultCode' => 'Success',
             'ResultMessage' => '',
             'Exception' => null,
@@ -269,6 +295,7 @@ it('can create a 3D secure payment request with buyer information', function () 
                 'CodeForHash' => 'test-hash-code',
             ],
         ]),
+        'service.refmoka.com/PaymentDealer/GetBankCardInformation' => Http::response($this->mockCardInformation),
     ]);
 
     $payment = app(MokaPaymentThreeD::class);
@@ -290,7 +317,8 @@ it('can create a 3D secure payment request with buyer information', function () 
         );
 
     Http::assertSent(function ($request) {
-        return $request['PaymentDealerRequest']['BuyerInformation']['BuyerFullName'] === 'John Doe'
+        return $request->url() === 'https://service.refmoka.com/PaymentDealer/DoDirectPaymentThreeD'
+            && $request['PaymentDealerRequest']['BuyerInformation']['BuyerFullName'] === 'John Doe'
             && $request['PaymentDealerRequest']['BuyerInformation']['BuyerGsmNumber'] === '5551234567'
             && $request['PaymentDealerRequest']['BuyerInformation']['BuyerEmail'] === 'john@example.com'
             && $request['PaymentDealerRequest']['BuyerInformation']['BuyerAddress'] === '123 Main St';
@@ -303,7 +331,7 @@ it('can create a 3D secure payment request with buyer information', function () 
 
 it('can create a 3D secure payment request with partial buyer information', function () {
     Http::fake([
-        'service.refmoka.com/*' => Http::response([
+        'service.refmoka.com/PaymentDealer/DoDirectPaymentThreeD' => Http::response([
             'ResultCode' => 'Success',
             'ResultMessage' => '',
             'Exception' => null,
@@ -312,6 +340,7 @@ it('can create a 3D secure payment request with partial buyer information', func
                 'CodeForHash' => 'test-hash-code',
             ],
         ]),
+        'service.refmoka.com/PaymentDealer/GetBankCardInformation' => Http::response($this->mockCardInformation),
     ]);
 
     $payment = app(MokaPaymentThreeD::class);
@@ -331,7 +360,8 @@ it('can create a 3D secure payment request with partial buyer information', func
         );
 
     Http::assertSent(function ($request) {
-        return $request['PaymentDealerRequest']['BuyerInformation']['BuyerFullName'] === 'John Doe'
+        return $request->url() === 'https://service.refmoka.com/PaymentDealer/DoDirectPaymentThreeD'
+            && $request['PaymentDealerRequest']['BuyerInformation']['BuyerFullName'] === 'John Doe'
             && $request['PaymentDealerRequest']['BuyerInformation']['BuyerEmail'] === 'john@example.com'
             && $request['PaymentDealerRequest']['BuyerInformation']['BuyerGsmNumber'] === null
             && $request['PaymentDealerRequest']['BuyerInformation']['BuyerAddress'] === null;

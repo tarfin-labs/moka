@@ -33,7 +33,7 @@ class MokaServiceProvider extends ServiceProvider
             ], 'moka-config');
 
             $this->publishes([
-                __DIR__.'/../database/migrations/2024_01_15_122436_create_moka_payments_table.php' => database_path('migrations/'.date('Y_m_d_His', time()).'_create_moka_payments_table.php'),
+                __DIR__.'/../database/migrations/' => database_path('migrations/'),
             ], 'moka-migrations');
         }
 

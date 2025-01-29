@@ -8,6 +8,7 @@ use Illuminate\Support\Str;
 use Tarfin\Moka\Enums\MokaPaymentStatus;
 use Tarfin\Moka\Exceptions\MokaPaymentThreeDException;
 use Tarfin\Moka\Models\MokaPayment;
+use Tarfin\Moka\Facades\Moka;
 use Tarfin\Moka\MokaRequest;
 
 class MokaPaymentThreeD extends MokaRequest
@@ -67,17 +68,25 @@ class MokaPaymentThreeD extends MokaRequest
 
         $response = $this->sendRequest(self::ENDPOINT_CREATE, $paymentData);
 
+        $cardInfo = $this->getCardInfo($cardNumber);
+
+        $paymentData = [
+            'other_trx_code' => $paymentData['PaymentDealerRequest']['OtherTrxCode'],
+            'card_type' => $cardInfo['card_type'],
+            'card_last_four' => $cardInfo['card_last_four'],
+            'card_holder' => $cardHolderName,
+            'amount' => $amount,
+            'result_code' => $response['ResultCode'],
+            'result_message' => $response['ResultMessage'],
+            'installment' => $installment,
+            'three_d' => 1,
+        ];
+
         if ($response['ResultCode'] !== 'Success') {
             if (config('moka.store_failed_payments', false)) {
-                MokaPayment::create([
-                    'other_trx_code' => $paymentData['PaymentDealerRequest']['OtherTrxCode'],
-                    'amount' => $amount,
+                MokaPayment::create(array_merge($paymentData, [
                     'status' => MokaPaymentStatus::FAILED,
-                    'result_code' => $response['ResultCode'],
-                    'result_message' => $response['ResultMessage'],
-                    'installment' => $installment,
-                    'three_d' => 1,
-                ]);
+                ]));
             }
 
             throw new MokaPaymentThreeDException(
@@ -86,16 +95,10 @@ class MokaPaymentThreeD extends MokaRequest
             );
         }
 
-        MokaPayment::create([
-            'other_trx_code' => $paymentData['PaymentDealerRequest']['OtherTrxCode'],
+        MokaPayment::create(array_merge($paymentData, [
             'code_for_hash' => $response['Data']['CodeForHash'],
-            'amount' => $amount,
             'status' => MokaPaymentStatus::PENDING,
-            'result_code' => $response['ResultCode'],
-            'result_message' => $response['ResultMessage'],
-            'installment' => $installment,
-            'three_d' => 1,
-        ]);
+        ]));
 
         return Redirect::away($response['Data']['Url']);
     }
@@ -114,5 +117,16 @@ class MokaPaymentThreeD extends MokaRequest
         ];
 
         return $this;
+    }
+
+    public function getCardInfo(string $cardNumber): array
+    {
+        $binNumber = substr($cardNumber, 0, 6);
+        $response = Moka::binInquiry()->get($binNumber);
+
+        return [
+            'card_type' => $response['CardType'],
+            'card_last_four' => substr($cardNumber, -4),
+        ];
     }
 }
