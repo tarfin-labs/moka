@@ -35,6 +35,10 @@ class MokaServiceProvider extends ServiceProvider
             $this->publishes([
                 __DIR__.'/../database/migrations/' => database_path('migrations/'),
             ], 'moka-migrations');
+
+            $this->publishes([
+                __DIR__.'/../resources/lang' => lang_path('vendor/moka'),
+            ], 'moka-translations');
         }
 
         $this->loadRoutesFrom(__DIR__.'/../routes/web.php');
