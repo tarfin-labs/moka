@@ -34,5 +34,5 @@ return [
     'PaymentDealer.DoDirectPayment3dRequest.BasketAmountIsNotEqualPaymentAmount' => 'If the products sold are added to the cart, the cart amount and the payment amount must match.',
     'PaymentDealer.DoDirectPayment3dRequest.BasketProductNotFoundInYourProductList' => 'If the products sold have been added to the cart, the current product must be selected.',
     'PaymentDealer.DoDirectPayment3dRequest.MustBeOneOfDealerProductIdOrProductCode' => 'If the products sold have been added to the cart, the product code or moka product ID must be entered.',
-    'EX' => 'An unexpected error has occurred.'
+    'EX' => 'An unexpected error has occurred.',
 ];

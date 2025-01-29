@@ -34,5 +34,5 @@ return [
     'PaymentDealer.DoDirectPayment3dRequest.BasketAmountIsNotEqualPaymentAmount' => 'Satılan ürünler sepete eklendiyse, sepet tutarı ile ödeme tutarı eşleşmelidir.',
     'PaymentDealer.DoDirectPayment3dRequest.BasketProductNotFoundInYourProductList' => 'Satılan ürünler sepete eklendiyse, geçerli ürün seçilmelidir.',
     'PaymentDealer.DoDirectPayment3dRequest.MustBeOneOfDealerProductIdOrProductCode' => 'Satılan ürünler sepete eklendiyse, ürün kodu veya moka ürün ID si girilmelidir.',
-    'EX' => 'Beklenmeyen bir hata oluştu.'
+    'EX' => 'Beklenmeyen bir hata oluştu.',
 ];

@@ -10,5 +10,5 @@ return [
     'PaymentDealer.DoCalcPaymentAmount.DealerDoNotBinNumberInquiryAllowed' => 'The dealer does not have permission to query Bin number.',
     'PaymentDealer.DoCalcPaymentAmount.BinNumberMustGiven' => 'The bin number must be given.',
     'PaymentDealer.DoCalcPaymentAmount.BothGroupRevenueRateAndGroupRevenueAmountMustBeZero' => 'Both the group income ratio and the group income amount must be 0.',
-    'EX' => 'An unexpected error has occurred'
+    'EX' => 'An unexpected error has occurred',
 ];

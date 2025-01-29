@@ -7,8 +7,8 @@ use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Str;
 use Tarfin\Moka\Enums\MokaPaymentStatus;
 use Tarfin\Moka\Exceptions\MokaPaymentThreeDException;
-use Tarfin\Moka\Models\MokaPayment;
 use Tarfin\Moka\Facades\Moka;
+use Tarfin\Moka\Models\MokaPayment;
 use Tarfin\Moka\MokaRequest;
 
 class MokaPaymentThreeD extends MokaRequest

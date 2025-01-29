@@ -2,7 +2,6 @@
 
 use Illuminate\Http\Client\Request;
 use Illuminate\Support\Facades\Http;
-use Tarfin\Moka\Exceptions\MokaException;
 use Tarfin\Moka\Exceptions\MokaBinInquiryException;
 use Tarfin\Moka\Facades\Moka;
 

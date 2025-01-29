@@ -10,5 +10,5 @@ return [
     'PaymentDealer.DoCalcPaymentAmount.DealerDoNotBinNumberInquiryAllowed' => 'Bayinin Bin numarası sorgulama izni yok.',
     'PaymentDealer.DoCalcPaymentAmount.BinNumberMustGiven' => 'Bin numarası verilmeli.',
     'PaymentDealer.DoCalcPaymentAmount.BothGroupRevenueRateAndGroupRevenueAmountMustBeZero' => 'Hem grup gelir oranı hem de grup gelir tutarı 0 olmalıdır.',
-    'EX' => 'Beklenmeyen bir hata oluştu'
+    'EX' => 'Beklenmeyen bir hata oluştu',
 ];

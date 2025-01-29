@@ -250,43 +250,38 @@ $result = Moka::paymentTable()->calculate(
 The service will return an array containing available installment options and commission rates:
 
 ```php
-'Data' => [
-    'BankPaymentInstallmentInfoList' => [
-        [
-            'BankInfoName' => 'GENEL',
-            'PaymentInstallmentInfoList' => [
-                [
-                    'CommissionType' => 'CreditCard',
-                    'InstallmentNumber' => 1,
-                    'DealerCommissionRate' => 2.2,
-                    'DealerCommissionFixedAmount' => 0,
-                    'DealerCommissionAmount' => 2.2,
-                    'PerInstallmentAmount' => 100,
-                    'Amount' => 100,
-                ],
-                // ... more installment options
+'BankPaymentInstallmentInfoList' => [
+    [
+        'BankInfoName' => 'GENEL',
+        'PaymentInstallmentInfoList' => [
+            [
+                'CommissionType' => 'CreditCard',
+                'InstallmentNumber' => 1,
+                'DealerCommissionRate' => 2.2,
+                'DealerCommissionFixedAmount' => 0,
+                'DealerCommissionAmount' => 2.2,
+                'PerInstallmentAmount' => 100,
+                'Amount' => 100,
             ],
-        ],
-        [
-            'BankInfoName' => 'AXESS',
-            'PaymentInstallmentInfoList' => [
-                [
-                    'CommissionType' => 'CreditCard',
-                    'InstallmentNumber' => 1,
-                    'DealerCommissionRate' => 3,
-                    'DealerCommissionFixedAmount' => 0,
-                    'DealerCommissionAmount' => 3,
-                    'PerInstallmentAmount' => 100,
-                    'Amount' => 100,
-                ],
-                // ... more installment options
-            ],
+            // ... more installment options
         ],
     ],
-    'ResultCode' => 'Success',
-    'ResultMessage' => '',
-    'Exception' => null,
-]
+    [
+        'BankInfoName' => 'AXESS',
+        'PaymentInstallmentInfoList' => [
+            [
+                'CommissionType' => 'CreditCard',
+                'InstallmentNumber' => 1,
+                'DealerCommissionRate' => 3,
+                'DealerCommissionFixedAmount' => 0,
+                'DealerCommissionAmount' => 3,
+                'PerInstallmentAmount' => 100,
+                'Amount' => 100,
+            ],
+            // ... more installment options
+        ],
+    ],
+],
 ```
 
 ## Testing
