@@ -2,7 +2,7 @@
 
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
-use Tarfin\Moka\Http\Controllers\CallbackController;
+use Tarfin\Moka\Http\Controllers\MokaCallbackController;
 use Tarfin\Moka\Models\MokaPayment;
 
 it('redirects to success URL with correct parameters when payment is successful', function () {
@@ -19,7 +19,7 @@ it('redirects to success URL with correct parameters when payment is successful'
         'resultMessage' => 'Success',
     ]);
 
-    $controller = new CallbackController;
+    $controller = new MokaCallbackController;
     $response = $controller->handle3D($request);
 
     expect($response->getTargetUrl())->toBe(url(config('moka.payment_success_url')));
@@ -42,7 +42,7 @@ it('redirects to failed URL with correct parameters when payment fails', functio
         'resultMessage' => 'Failed',
     ]);
 
-    $controller = new CallbackController;
+    $controller = new MokaCallbackController;
     $response = $controller->handle3D($request);
 
     expect($response->getTargetUrl())->toBe(url(config('moka.payment_failed_url')));
@@ -56,7 +56,7 @@ it('throws ModelNotFoundException when payment is not found', function () {
         'OtherTrxCode' => 'non_existent_code',
     ]);
 
-    $controller = new CallbackController;
+    $controller = new MokaCallbackController;
 
     expect(fn () => $controller->handle3D($request))->toThrow(ModelNotFoundException::class);
 });

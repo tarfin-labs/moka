@@ -8,7 +8,7 @@ use Illuminate\Routing\Controller;
 use Tarfin\Moka\Enums\MokaPaymentStatus;
 use Tarfin\Moka\Models\MokaPayment;
 
-class CallbackController extends Controller
+class MokaCallbackController extends Controller
 {
     public function handle3D(Request $request): RedirectResponse
     {
