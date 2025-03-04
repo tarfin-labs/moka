@@ -127,7 +127,7 @@ it('can create a 3D secure payment request with minimal parameters', function ()
             && $request['PaymentDealerRequest']['Language'] === 'TR'
             && $request['PaymentDealerRequest']['IsPoolPayment'] === 0
             && $request['PaymentDealerRequest']['IsTokenized'] === 0
-            && Str::isUuid($request['PaymentDealerRequest']['OtherTrxCode'])
+            && Str::isUlid($request['PaymentDealerRequest']['OtherTrxCode'])
             && $request['PaymentDealerRequest']['IsPreAuth'] === 0
             && $request['PaymentDealerRequest']['ReturnHash'] === 1
             && $request['PaymentDealerRequest']['Description'] === ''

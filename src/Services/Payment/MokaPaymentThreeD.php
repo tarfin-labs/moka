@@ -51,7 +51,7 @@ class MokaPaymentThreeD extends MokaRequest
                 'RedirectUrl' => $returnUrl ?? route('moka-callback.handle3D'),
                 'RedirectType' => $redirectType ?? config('moka.redirect_type'),
                 'Software' => $software ?? config('moka.software'),
-                'OtherTrxCode' => $otherTrxCode ?? Str::uuid()->toString(),
+                'OtherTrxCode' => $otherTrxCode ?? Str::ulid()->toString(),
                 'IsPoolPayment' => $isPoolPayment ?? config('moka.is_pool_payment'),
                 'IsTokenized' => $isTokenized ?? config('moka.is_tokenized'),
                 'Language' => $language ?? config('moka.language'),
