@@ -65,7 +65,7 @@ public function checkout()
         cvc: '123',
         software: 'Tarfin',
         // Optional parameters
-        returnUrl: 'https://your-site.com/callback', // Defaults to route('callback.handle3D')
+        returnUrl: 'https://your-site.com/moka-callback', // Defaults to route('callback.handle3D')
         installment: 1,
         otherTrxCode: 'your-unique-id', // If not provided, a UUID will be generated
         isPoolPayment: 0,
@@ -105,7 +105,7 @@ public function checkoutWithBuyerInfo()
 
 ### Handling the 3D Callback
 
-The package automatically sets up a callback route at `POST /callback` (named `callback.handle3D`) to handle the 3D payment result. The callback will:
+The package automatically sets up a callback route at `POST /moka-callback` (named `moka-callback.handle3D`) to handle the 3D payment result. The callback will:
 
 1. Validate the payment
 2. Update the payment status

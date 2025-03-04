@@ -48,7 +48,7 @@ class MokaPaymentThreeD extends MokaRequest
                 'Currency' => $currency ?? config('moka.currency'),
                 'InstallmentNumber' => $installment,
                 'ClientIP' => request()->ip(),
-                'RedirectUrl' => $returnUrl ?? route('callback.handle3D'),
+                'RedirectUrl' => $returnUrl ?? route('moka-callback.handle3D'),
                 'RedirectType' => $redirectType ?? config('moka.redirect_type'),
                 'Software' => $software ?? config('moka.software'),
                 'OtherTrxCode' => $otherTrxCode ?? Str::uuid()->toString(),

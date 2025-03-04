@@ -59,7 +59,7 @@ it('can create a 3D secure payment request with all parameters', function () {
         expMonth: '12',
         expYear: '2025',
         cvc: '123',
-        returnUrl: 'https://your-site.com/callback',
+        returnUrl: 'https://your-site.com/moka-callback',
         software: 'Tarfin',
         installment: 3,
         otherTrxCode: $otherTrxCode,
@@ -159,7 +159,7 @@ it('throws exception when payment creation fails', function () {
         expMonth: '12',
         expYear: '2025',
         cvc: '123',
-        returnUrl: 'https://your-site.com/callback',
+        returnUrl: 'https://your-site.com/moka-callback',
         software: 'Tarfin'
     ))->toThrow(function (MokaPaymentThreeDException $exception) {
         expect($exception->getMessage())->toBe(__('moka::payment-three-d.PaymentDealer.CheckCardInfo.InvalidCardInfo'))
@@ -191,7 +191,7 @@ it('stores payment data in database when payment is successful', function () {
         expMonth: '12',
         expYear: '2025',
         cvc: '123',
-        returnUrl: 'https://your-site.com/callback',
+        returnUrl: 'https://your-site.com/moka-callback',
         installment: 3,
         software: 'Tarfin',
         otherTrxCode: $otherTrxCode
@@ -236,7 +236,7 @@ it('stores failed payment data in database when enabled in config', function () 
             expMonth: '12',
             expYear: '2025',
             cvc: '123',
-            returnUrl: 'https://your-site.com/callback',
+            returnUrl: 'https://your-site.com/moka-callback',
             software: 'Tarfin',
             otherTrxCode: $otherTrxCode
         );
@@ -279,7 +279,7 @@ it('does not store failed payment data in database when disabled in config', fun
             expMonth: '12',
             expYear: '2025',
             cvc: '123',
-            returnUrl: 'https://your-site.com/callback',
+            returnUrl: 'https://your-site.com/moka-callback',
             software: 'Tarfin',
             otherTrxCode: $otherTrxCode
         );

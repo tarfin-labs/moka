@@ -11,7 +11,7 @@ it('redirects to success URL with correct parameters when payment is successful'
         'code_for_hash' => 'ABCDE',
     ]);
 
-    $request = Request::create('/callback', 'POST', [
+    $request = Request::create('/moka-callback', 'POST', [
         'OtherTrxCode' => '12345',
         'hashValue' => hash('sha256', strtoupper('ABCDE').'T'),
         'trxCode' => '67890',
@@ -34,7 +34,7 @@ it('redirects to failed URL with correct parameters when payment fails', functio
         'code_for_hash' => 'ABCDE',
     ]);
 
-    $request = Request::create('/callback', 'POST', [
+    $request = Request::create('/moka-callback', 'POST', [
         'OtherTrxCode' => '12345',
         'hashValue' => 'invalid_hash',
         'trxCode' => '67890',
@@ -52,7 +52,7 @@ it('redirects to failed URL with correct parameters when payment fails', functio
 });
 
 it('throws ModelNotFoundException when payment is not found', function () {
-    $request = Request::create('/callback', 'POST', [
+    $request = Request::create('/moka-callback', 'POST', [
         'OtherTrxCode' => 'non_existent_code',
     ]);
 
