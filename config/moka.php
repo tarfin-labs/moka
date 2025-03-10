@@ -43,6 +43,6 @@ return [
     | in your application's config file.
     |
     */
-    'payment_success_url' => env('MOKA_PAYMENT_SUCCESS_URL', '/payment/success'),
-    'payment_failed_url' => env('MOKA_PAYMENT_FAILED_URL', '/payment/failed'),
+    'payment_success_url' => env('MOKA_PAYMENT_SUCCESS_URL', '/moka-payment/success'),
+    'payment_failure_url' => env('MOKA_PAYMENT_FAILURE_URL', '/moka-payment/failure'),
 ];

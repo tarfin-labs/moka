@@ -45,7 +45,7 @@ it('redirects to failed URL with correct parameters when payment fails', functio
     $controller = new MokaCallbackController;
     $response = $controller->handle3D($request);
 
-    expect($response->getTargetUrl())->toBe(url(config('moka.payment_failed_url')));
+    expect($response->getTargetUrl())->toBe(url(config('moka.payment_failure_url')));
     expect(session('other_trx_code'))->toBe('12345');
     expect(session('status'))->toBe('failed');
     expect(session('message'))->toBe('Failed');

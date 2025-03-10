@@ -27,8 +27,8 @@ MOKA_PASSWORD=your-password
 MOKA_SANDBOX_MODE=true
 
 # Optional: Configure redirect URLs
-MOKA_PAYMENT_SUCCESS_URL=/payment/success
-MOKA_PAYMENT_FAILED_URL=/payment/failed
+MOKA_PAYMENT_SUCCESS_URL=/moka-payment/success
+MOKA_PAYMENT_FAILURE_URL=/moka-payment/failed
 ```
 
 ## Usage
@@ -114,8 +114,8 @@ The package automatically sets up a callback route at `POST /moka-callback` (nam
 You can configure the success and failure URLs in your `.env` file:
 
 ```env
-MOKA_PAYMENT_SUCCESS_URL=/payment/success
-MOKA_PAYMENT_FAILED_URL=/payment/failed
+MOKA_PAYMENT_SUCCESS_URL=/moka-payment/success
+MOKA_PAYMENT_FAILURE_URL=/moka-payment/failure
 ```
 
 The callback will redirect to these URLs with the following session data:
