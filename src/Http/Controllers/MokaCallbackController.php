@@ -28,9 +28,9 @@ class MokaCallbackController extends Controller
             : ($request->query('failure_url') ?: config('moka.payment_failure_url'));
 
         return redirect($redirectUrl)->with([
-                                                'other_trx_code' => $payment->other_trx_code,
-                                                'status' => $isSuccess ? 'success' : 'failed',
-                                                'message' => $payment->result_message,
-                                            ]);
+            'other_trx_code' => $payment->other_trx_code,
+            'status' => $isSuccess ? 'success' : 'failed',
+            'message' => $payment->result_message,
+        ]);
     }
 }
