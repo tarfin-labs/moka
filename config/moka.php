@@ -44,5 +44,5 @@ return [
     |
     */
     'payment_success_url' => env('MOKA_PAYMENT_SUCCESS_URL', '/payment/success'),
-    'payment_failed_url' => env('MOKA_PAYMENT_FAILED_URL', '/payment/failed'),
+    'payment_failure_url' => env('MOKA_PAYMENT_FAILURE_URL', '/payment/failure'),
 ];

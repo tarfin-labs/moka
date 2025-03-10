@@ -28,7 +28,7 @@ MOKA_SANDBOX_MODE=true
 
 # Optional: Configure redirect URLs
 MOKA_PAYMENT_SUCCESS_URL=/payment/success
-MOKA_PAYMENT_FAILED_URL=/payment/failed
+MOKA_PAYMENT_FAILURE_URL=/payment/failed
 ```
 
 ## Usage
@@ -115,7 +115,7 @@ You can configure the success and failure URLs in your `.env` file:
 
 ```env
 MOKA_PAYMENT_SUCCESS_URL=/payment/success
-MOKA_PAYMENT_FAILED_URL=/payment/failed
+MOKA_PAYMENT_FAILURE_URL=/payment/failure
 ```
 
 The callback will redirect to these URLs with the following session data:
