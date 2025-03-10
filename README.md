@@ -127,6 +127,34 @@ The callback will redirect to these URLs with the following session data:
 ]
 ```
 
+### Dynamic Redirect URLs
+
+You can specify custom success and failure URLs for each payment by adding them as query parameters to the return URL:
+
+```php
+$result = Moka::threeDPayment()->create(
+    amount: 100.00,
+    cardHolderName: 'John Doe',
+    cardNumber: '5555555555555555',
+    expMonth: '12',
+    expYear: '2025',
+    cvc: '123',
+    returnUrl: route('moka-callback.handle3D', [
+        'success_url' => 'https://your-site.com/orders/123/payment-success',
+        'failure_url' => 'https://your-site.com/orders/123/payment-failed',
+    ]),
+    installment: 1,
+);
+```
+
+With this approach, you can dynamically specify different URLs for each payment transaction. The callback handler will:
+
+1. Check for `success_url` or `failure_url` parameters in the request
+2. Redirect to these URLs if present
+3. Fall back to the configured `MOKA_PAYMENT_SUCCESS_URL` or `MOKA_PAYMENT_FAILURE_URL` if not specified
+
+This is useful for applications that require different redirect destinations based on the payment context, such as returning users to specific order pages or application sections.
+
 ### Calculating Payment Amount
 
 You can calculate the payment amount including commission rates and bank card details using the `MokaPaymentAmount` service:
