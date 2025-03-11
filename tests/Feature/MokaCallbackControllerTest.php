@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
+use Illuminate\Routing\UrlGenerator;
 use Tarfin\Moka\Http\Controllers\MokaCallbackController;
 use Tarfin\Moka\Models\MokaPayment;
 
@@ -22,10 +23,11 @@ it('redirects to success URL with correct parameters when payment is successful'
     $controller = new MokaCallbackController;
     $response = $controller->handle3D($request);
 
-    expect($response->getTargetUrl())->toBe(url(config('moka.payment_success_url')));
-    expect(session('other_trx_code'))->toBe('12345');
-    expect(session('status'))->toBe('success');
-    expect(session('message'))->toBe('Success');
+    expect($response->getTargetUrl())->toBe(
+        app(UrlGenerator::class)->query(config('moka.payment_success_url'), [
+            'other_trx_code' => '12345',
+        ])
+    );
 });
 
 it('redirects to failed URL with correct parameters when payment fails', function () {
@@ -45,10 +47,11 @@ it('redirects to failed URL with correct parameters when payment fails', functio
     $controller = new MokaCallbackController;
     $response = $controller->handle3D($request);
 
-    expect($response->getTargetUrl())->toBe(url(config('moka.payment_failure_url')));
-    expect(session('other_trx_code'))->toBe('12345');
-    expect(session('status'))->toBe('failed');
-    expect(session('message'))->toBe('Failed');
+    expect($response->getTargetUrl())->toBe(
+        app(UrlGenerator::class)->query(config('moka.payment_failure_url'), [
+            'other_trx_code' => '12345',
+        ])
+    );
 });
 
 it('throws ModelNotFoundException when payment is not found', function () {
