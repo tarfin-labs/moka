@@ -25,7 +25,7 @@ class MokaCallbackController extends Controller
 
         $baseUrl = $isSuccess
             ? ($request->query(key: 'success_url') ?: config(key: 'moka.payment_success_url'))
-            : ($request->query(key: 'failure_url') ?: config(key: 'moka.payment_failed_url'));
+            : ($request->query(key: 'failure_url') ?: config(key: 'moka.payment_failure_url'));
 
         $separator = (str_contains($baseUrl, '?')) ? '&' : '?';
         $redirectUrl = "$baseUrl{$separator}other_trx_code={$payment->other_trx_code}";
