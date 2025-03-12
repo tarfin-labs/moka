@@ -1,9 +1,12 @@
 <?php
 
+use Illuminate\Queue\SerializesModels;
 use Tarfin\Moka\Events\MokaPaymentEvent;
 use Tarfin\Moka\Events\MokaPaymentFailed;
 use Tarfin\Moka\Events\MokaPaymentSucceeded;
 use Tarfin\Moka\Models\MokaPayment;
+use Illuminate\Foundation\Events\Dispatchable;
+use Illuminate\Broadcasting\InteractsWithSockets;
 
 it('confirms MokaPaymentSucceeded is a subclass of MokaPaymentEvent', function () {
     expect(new MokaPaymentSucceeded(MokaPayment::factory()->make()))
@@ -30,4 +33,13 @@ it('correctly stores the MokaPayment in the event', function () {
         ->and($failedEvent->mokaPayment)->toBeInstanceOf(MokaPayment::class)
         ->and($failedEvent->mokaPayment->other_trx_code)->toBe('test-transaction-123')
         ->and($failedEvent->mokaPayment->amount)->toBe('150.75');
+});
+
+it('verifies MokaPaymentEvent uses required traits', function () {
+    $reflection = new ReflectionClass(MokaPaymentEvent::class);
+
+    expect($reflection->hasMethod('dispatch'))->toBeTrue()
+        ->and($reflection->getTraitNames())->toContain(Dispatchable::class)
+        ->and($reflection->getTraitNames())->toContain(InteractsWithSockets::class)
+        ->and($reflection->getTraitNames())->toContain(SerializesModels::class);
 });
