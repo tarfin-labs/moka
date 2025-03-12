@@ -95,3 +95,28 @@ it('redirects to failure URL after dispatching failure event', function () {
     expect($response->getTargetUrl())->toContain('https://example.com/failure')
         ->toContain('other_trx_code=12345');
 });
+
+it('falls back to config success_url when none provided', function () {
+    config(['moka.payment_success_url' => 'https://default-success.com']);
+
+    MokaPayment::factory()->create([
+        'other_trx_code' => '12345',
+        'code_for_hash' => 'ABCDE',
+    ]);
+
+    $hashValue = hash('sha256', strtoupper('ABCDE').'T');
+
+    $response = $this->post(route('moka-callback.handle3D'), [
+        'OtherTrxCode' => '12345',
+        'hashValue' => $hashValue,
+        'trxCode' => '67890',
+        'resultCode' => '00',
+        'resultMessage' => 'Success',
+    ]);
+
+    Event::assertDispatched(MokaPaymentSucceeded::class);
+
+    $response->assertRedirect();
+    expect($response->getTargetUrl())->toContain('https://default-success.com')
+        ->toContain('other_trx_code=12345');
+});
