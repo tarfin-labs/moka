@@ -51,3 +51,26 @@ it('dispatches MokaPaymentFailed event when callback indicates failure', functio
         return $event->mokaPayment->id === $payment->id;
     });
 });
+
+it('redirects to success URL after dispatching success event', function () {
+    $payment = MokaPayment::factory()->create([
+        'other_trx_code' => '12345',
+        'code_for_hash' => 'ABCDE',
+    ]);
+
+    $hashValue = hash('sha256', strtoupper('ABCDE').'T');
+
+    $response = $this->post(route('moka-callback.handle3D', ['success_url' => 'https://example.com/success']), [
+        'OtherTrxCode' => '12345',
+        'hashValue' => $hashValue,
+        'trxCode' => '67890',
+        'resultCode' => '00',
+        'resultMessage' => 'Success',
+    ]);
+
+    Event::assertDispatched(MokaPaymentSucceeded::class);
+
+    $response->assertRedirect();
+    expect($response->getTargetUrl())->toContain('https://example.com/success')
+        ->toContain('other_trx_code=12345');
+});
