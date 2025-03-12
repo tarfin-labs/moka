@@ -88,10 +88,10 @@ it('passes the correct payment object to the event', function () {
     ]);
 
     $payment->handle3DCallback(
-        hashValue:     hash('sha256', strtoupper($payment->code_for_hash).'T'),
-        resultCode:    '0000',
+        hashValue: hash('sha256', strtoupper($payment->code_for_hash).'T'),
+        resultCode: '0000',
         resultMessage: 'Success',
-        trxCode:       'ORDER-17131QQFG04026575'
+        trxCode: 'ORDER-17131QQFG04026575'
     );
 
     Event::assertDispatched(MokaPaymentSucceeded::class, static function ($event) use ($payment) {
