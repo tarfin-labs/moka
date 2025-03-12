@@ -127,6 +127,90 @@ The callback will redirect to these URLs with the following session data:
 ]
 ```
 
+### Events Fired After Payment
+
+The package includes an event system to help you manage payment outcomes. When a 3D Secure payment is processed, one of the following events will be dispatched:
+
+```php
+// For successful payments
+Tarfin\Moka\Events\MokaPaymentSucceeded::dispatch($payment);
+
+// For failed payments
+Tarfin\Moka\Events\MokaPaymentFailed::dispatch($payment);
+```
+
+#### Listening for Payment Events
+
+To react to these events, you can create listeners in your application. There are multiple ways to register event listeners in Laravel.
+
+Then create your listener classes:
+
+```php
+// app/Listeners/HandleSuccessfulMokaPayment.php
+
+namespace App\Listeners;
+
+use Tarfin\Moka\Events\MokaPaymentSucceeded;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Queue\InteractsWithQueue;
+
+class HandleSuccessfulMokaPayment implements ShouldQueue
+{
+    use InteractsWithQueue;
+    
+    /**
+     * Handle the event.
+     */
+    public function handle(MokaPaymentSucceeded $event): void
+    {
+        $payment = $event->mokaPayment;
+        
+        // Access payment details
+        $transactionId = $payment->other_trx_code;
+        $amount = $payment->amount;
+        
+        // Implement your business logic
+        // - Complete the order
+        // - Generate invoice
+        // - Send confirmation email
+        // - Update inventory
+    }
+}
+```
+
+```php
+// app/Listeners/HandleFailedMokaPayment.php
+
+namespace App\Listeners;
+
+use Tarfin\Moka\Events\MokaPaymentFailed;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Queue\InteractsWithQueue;
+
+class HandleFailedMokaPayment implements ShouldQueue
+{
+    use InteractsWithQueue;
+    
+    /**
+     * Handle the event.
+     */
+    public function handle(MokaPaymentFailed $event): void
+    {
+        $payment = $event->mokaPayment;
+        
+        // Access payment details
+        $transactionId = $payment->other_trx_code;
+        $failureCode = $payment->result_code;
+        $failureMessage = $payment->result_message;
+        
+        // Implement your business logic
+        // - Update order status
+        // - Notify customer
+        // - Log payment failure
+    }
+}
+```
+
 ### Dynamic Redirect URLs
 
 You can specify custom success and failure URLs for each payment by adding them as query parameters to the return URL:

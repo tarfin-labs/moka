@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Tarfin\Moka\Database\Factories\MokaPaymentFactory;
 use Tarfin\Moka\Enums\MokaPaymentStatus;
+use Tarfin\Moka\Events\MokaPaymentFailed;
+use Tarfin\Moka\Events\MokaPaymentSucceeded;
 
 class MokaPayment extends Model
 {
@@ -43,15 +45,24 @@ class MokaPayment extends Model
         string $trxCode
     ): self {
         $successHash = hash('sha256', strtoupper($this->code_for_hash).'T');
-        $isSuccess = $hashValue === $successHash;
+        $status = $hashValue === $successHash
+            ? MokaPaymentStatus::SUCCESS
+            : MokaPaymentStatus::FAILED;
 
         $this->update([
             'trx_code' => $trxCode,
-            'status' => $isSuccess ? MokaPaymentStatus::SUCCESS : MokaPaymentStatus::FAILED,
+            'status' => $status,
             'result_code' => $resultCode,
             'result_message' => $resultMessage,
         ]);
 
-        return $this->refresh();
+        $this->refresh();
+
+        match ($status) {
+            MokaPaymentStatus::SUCCESS => MokaPaymentSucceeded::dispatch($this),
+            MokaPaymentStatus::FAILED => MokaPaymentFailed::dispatch($this),
+        };
+
+        return $this;
     }
 }
