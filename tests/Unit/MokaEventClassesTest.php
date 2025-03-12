@@ -1,12 +1,12 @@
 <?php
 
+use Illuminate\Broadcasting\InteractsWithSockets;
+use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 use Tarfin\Moka\Events\MokaPaymentEvent;
 use Tarfin\Moka\Events\MokaPaymentFailed;
 use Tarfin\Moka\Events\MokaPaymentSucceeded;
 use Tarfin\Moka\Models\MokaPayment;
-use Illuminate\Foundation\Events\Dispatchable;
-use Illuminate\Broadcasting\InteractsWithSockets;
 
 it('confirms MokaPaymentSucceeded is a subclass of MokaPaymentEvent', function () {
     expect(new MokaPaymentSucceeded(MokaPayment::factory()->make()))
