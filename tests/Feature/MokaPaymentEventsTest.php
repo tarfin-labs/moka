@@ -55,3 +55,27 @@ it('dispatches MokaPaymentFailed event on failed 3D callback', function () {
 
     Event::assertNotDispatched(MokaPaymentSucceeded::class);
 });
+
+it('dispatches MokaPaymentFailed event when hash validation fails', function () {
+    $payment = MokaPayment::factory()->create([
+        'other_trx_code' => 'test-transaction-123',
+        'code_for_hash' => 'test-hash-code',
+        'amount' => 100.00,
+    ]);
+
+    $invalidHashValue = 'invalid-hash-value';
+
+    $payment->handle3DCallback(
+        hashValue: $invalidHashValue,
+        resultCode: '0001',
+        resultMessage: 'Invalid hash',
+        trxCode: 'ORDER-17131QQFG04026575'
+    );
+
+    Event::assertDispatched(MokaPaymentFailed::class, static function ($event) use ($payment) {
+        return $event->mokaPayment->id === $payment->id
+            && $event->mokaPayment->status === MokaPaymentStatus::FAILED;
+    });
+
+    Event::assertNotDispatched(MokaPaymentSucceeded::class);
+});
