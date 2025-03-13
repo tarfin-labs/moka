@@ -8,8 +8,8 @@ use Tarfin\Moka\Models\MokaPayment;
 
 beforeEach(function () {
     Event::fake([
-                    MokaPaymentSucceededEvent::class,
-                    MokaPaymentFailedEvent::class,
+        MokaPaymentSucceededEvent::class,
+        MokaPaymentFailedEvent::class,
     ]);
 });
 
