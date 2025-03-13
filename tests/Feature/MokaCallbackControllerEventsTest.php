@@ -1,14 +1,14 @@
 <?php
 
 use Illuminate\Support\Facades\Event;
-use Tarfin\Moka\Events\MokaPaymentFailed;
+use Tarfin\Moka\Events\MokaPaymentFailedEvent;
 use Tarfin\Moka\Events\MokaPaymentSucceeded;
 use Tarfin\Moka\Models\MokaPayment;
 
 beforeEach(function () {
     Event::fake([
-        MokaPaymentSucceeded::class,
-        MokaPaymentFailed::class,
+                    MokaPaymentSucceeded::class,
+                    MokaPaymentFailedEvent::class,
     ]);
 });
 
@@ -33,7 +33,7 @@ it('dispatches MokaPaymentSucceeded event when callback indicates success', func
     });
 });
 
-it('dispatches MokaPaymentFailed event when callback indicates failure', function () {
+it('dispatches MokaPaymentFailedEvent event when callback indicates failure', function () {
     $payment = MokaPayment::factory()->create([
         'other_trx_code' => '12345',
         'code_for_hash' => 'ABCDE',
@@ -47,7 +47,7 @@ it('dispatches MokaPaymentFailed event when callback indicates failure', functio
         'resultMessage' => 'Failed',
     ]);
 
-    Event::assertDispatched(MokaPaymentFailed::class, function ($event) use ($payment) {
+    Event::assertDispatched(MokaPaymentFailedEvent::class, static function ($event) use ($payment) {
         return $event->mokaPayment->id === $payment->id;
     });
 });
@@ -89,7 +89,7 @@ it('redirects to failure URL after dispatching failure event', function () {
         'resultMessage' => 'Failed',
     ]);
 
-    Event::assertDispatched(MokaPaymentFailed::class);
+    Event::assertDispatched(MokaPaymentFailedEvent::class);
 
     $response->assertRedirect();
     expect($response->getTargetUrl())->toContain('https://example.com/failure')
@@ -137,7 +137,7 @@ it('falls back to config failure_url when none provided', function () {
         'resultMessage' => 'Failed',
     ]);
 
-    Event::assertDispatched(MokaPaymentFailed::class);
+    Event::assertDispatched(MokaPaymentFailedEvent::class);
 
     $response->assertRedirect();
     expect($response->getTargetUrl())->toContain('https://default-failure.com')

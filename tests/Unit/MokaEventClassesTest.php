@@ -4,7 +4,7 @@ use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 use Tarfin\Moka\Events\MokaPaymentEvent;
-use Tarfin\Moka\Events\MokaPaymentFailed;
+use Tarfin\Moka\Events\MokaPaymentFailedEvent;
 use Tarfin\Moka\Events\MokaPaymentSucceeded;
 use Tarfin\Moka\Models\MokaPayment;
 
@@ -13,8 +13,8 @@ it('confirms MokaPaymentSucceeded is a subclass of MokaPaymentEvent', function (
         ->toBeInstanceOf(MokaPaymentEvent::class);
 });
 
-it('confirms MokaPaymentFailed is a subclass of MokaPaymentEvent', function () {
-    expect(new MokaPaymentFailed(MokaPayment::factory()->make()))
+it('confirms MokaPaymentFailedEvent is a subclass of MokaPaymentEvent', function () {
+    expect(new MokaPaymentFailedEvent(MokaPayment::factory()->make()))
         ->toBeInstanceOf(MokaPaymentEvent::class);
 });
 
@@ -25,7 +25,7 @@ it('correctly stores the MokaPayment in the event', function () {
     ]);
 
     $successEvent = new MokaPaymentSucceeded($payment);
-    $failedEvent = new MokaPaymentFailed($payment);
+    $failedEvent = new MokaPaymentFailedEvent($payment);
 
     expect($successEvent->mokaPayment)->toBeInstanceOf(MokaPayment::class)
         ->and($successEvent->mokaPayment->other_trx_code)->toBe('test-transaction-123')

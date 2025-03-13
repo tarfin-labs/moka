@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Tarfin\Moka\Database\Factories\MokaPaymentFactory;
 use Tarfin\Moka\Enums\MokaPaymentStatus;
-use Tarfin\Moka\Events\MokaPaymentFailed;
+use Tarfin\Moka\Events\MokaPaymentFailedEvent;
 use Tarfin\Moka\Events\MokaPaymentSucceeded;
 
 class MokaPayment extends Model
@@ -60,7 +60,7 @@ class MokaPayment extends Model
 
         match ($status) {
             MokaPaymentStatus::SUCCESS => MokaPaymentSucceeded::dispatch($this),
-            MokaPaymentStatus::FAILED => MokaPaymentFailed::dispatch($this),
+            MokaPaymentStatus::FAILED => MokaPaymentFailedEvent::dispatch($this),
         };
 
         return $this;
