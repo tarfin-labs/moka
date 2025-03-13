@@ -133,7 +133,7 @@ The package includes an event system to help you manage payment outcomes. When a
 
 ```php
 // For successful payments
-Tarfin\Moka\Events\MokaPaymentSucceeded::dispatch($payment);
+Tarfin\Moka\Events\MokaPaymentSucceededEvent::dispatch($payment);
 
 // For failed payments
 Tarfin\Moka\Events\MokaPaymentFailedEvent::dispatch($payment);
@@ -150,7 +150,7 @@ Then create your listener classes:
 
 namespace App\Listeners;
 
-use Tarfin\Moka\Events\MokaPaymentSucceeded;
+use Tarfin\Moka\Events\MokaPaymentSucceededEvent;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 
@@ -161,7 +161,7 @@ class HandleSuccessfulMokaPayment implements ShouldQueue
     /**
      * Handle the event.
      */
-    public function handle(MokaPaymentSucceeded $event): void
+    public function handle(MokaPaymentSucceededEvent $event): void
     {
         $payment = $event->mokaPayment;
         

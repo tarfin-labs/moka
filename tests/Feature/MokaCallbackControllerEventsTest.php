@@ -2,17 +2,17 @@
 
 use Illuminate\Support\Facades\Event;
 use Tarfin\Moka\Events\MokaPaymentFailedEvent;
-use Tarfin\Moka\Events\MokaPaymentSucceeded;
+use Tarfin\Moka\Events\MokaPaymentSucceededEvent;
 use Tarfin\Moka\Models\MokaPayment;
 
 beforeEach(function () {
     Event::fake([
-                    MokaPaymentSucceeded::class,
+                    MokaPaymentSucceededEvent::class,
                     MokaPaymentFailedEvent::class,
     ]);
 });
 
-it('dispatches MokaPaymentSucceeded event when callback indicates success', function () {
+it('dispatches MokaPaymentSucceededEvent event when callback indicates success', function () {
     $payment = MokaPayment::factory()->create([
         'other_trx_code' => '12345',
         'code_for_hash' => 'ABCDE',
@@ -28,7 +28,7 @@ it('dispatches MokaPaymentSucceeded event when callback indicates success', func
         'resultMessage' => 'Success',
     ]);
 
-    Event::assertDispatched(MokaPaymentSucceeded::class, static function ($event) use ($payment) {
+    Event::assertDispatched(MokaPaymentSucceededEvent::class, static function ($event) use ($payment) {
         return $event->mokaPayment->id === $payment->id;
     });
 });
@@ -68,7 +68,7 @@ it('redirects to success URL after dispatching success event', function () {
         'resultMessage' => 'Success',
     ]);
 
-    Event::assertDispatched(MokaPaymentSucceeded::class);
+    Event::assertDispatched(MokaPaymentSucceededEvent::class);
 
     $response->assertRedirect();
     expect($response->getTargetUrl())->toContain('https://example.com/success')
@@ -114,7 +114,7 @@ it('falls back to config success_url when none provided', function () {
         'resultMessage' => 'Success',
     ]);
 
-    Event::assertDispatched(MokaPaymentSucceeded::class);
+    Event::assertDispatched(MokaPaymentSucceededEvent::class);
 
     $response->assertRedirect();
     expect($response->getTargetUrl())->toContain('https://default-success.com')

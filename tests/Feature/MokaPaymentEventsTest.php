@@ -3,17 +3,17 @@
 use Illuminate\Support\Facades\Event;
 use Tarfin\Moka\Enums\MokaPaymentStatus;
 use Tarfin\Moka\Events\MokaPaymentFailedEvent;
-use Tarfin\Moka\Events\MokaPaymentSucceeded;
+use Tarfin\Moka\Events\MokaPaymentSucceededEvent;
 use Tarfin\Moka\Models\MokaPayment;
 
 beforeEach(function () {
     Event::fake([
-                    MokaPaymentSucceeded::class,
+                    MokaPaymentSucceededEvent::class,
                     MokaPaymentFailedEvent::class,
     ]);
 });
 
-it('dispatches MokaPaymentSucceeded event on successful 3D callback', function () {
+it('dispatches MokaPaymentSucceededEvent event on successful 3D callback', function () {
     $payment = MokaPayment::factory()->create([
         'other_trx_code' => 'test-transaction-123',
         'code_for_hash' => 'test-hash-code',
@@ -27,7 +27,7 @@ it('dispatches MokaPaymentSucceeded event on successful 3D callback', function (
         trxCode: 'ORDER-17131QQFG04026575'
     );
 
-    Event::assertDispatched(MokaPaymentSucceeded::class, static function ($event) use ($payment) {
+    Event::assertDispatched(MokaPaymentSucceededEvent::class, static function ($event) use ($payment) {
         return $event->mokaPayment->id === $payment->id
             && $event->mokaPayment->status === MokaPaymentStatus::SUCCESS;
     });
@@ -53,7 +53,7 @@ it('dispatches MokaPaymentFailedEvent event on failed 3D callback', function () 
             && $event->mokaPayment->status === MokaPaymentStatus::FAILED;
     });
 
-    Event::assertNotDispatched(MokaPaymentSucceeded::class);
+    Event::assertNotDispatched(MokaPaymentSucceededEvent::class);
 });
 
 it('dispatches MokaPaymentFailedEvent event when hash validation fails', function () {
@@ -77,7 +77,7 @@ it('dispatches MokaPaymentFailedEvent event when hash validation fails', functio
             && $event->mokaPayment->status === MokaPaymentStatus::FAILED;
     });
 
-    Event::assertNotDispatched(MokaPaymentSucceeded::class);
+    Event::assertNotDispatched(MokaPaymentSucceededEvent::class);
 });
 
 it('passes the correct payment object to the event', function () {
@@ -94,7 +94,7 @@ it('passes the correct payment object to the event', function () {
         trxCode: 'ORDER-17131QQFG04026575'
     );
 
-    Event::assertDispatched(MokaPaymentSucceeded::class, static function ($event) use ($payment) {
+    Event::assertDispatched(MokaPaymentSucceededEvent::class, static function ($event) use ($payment) {
         return $event->mokaPayment->id === $payment->id
             && $event->mokaPayment->trx_code === 'ORDER-17131QQFG04026575'
             && $event->mokaPayment->result_code === '0000'

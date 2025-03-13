@@ -5,11 +5,11 @@ use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 use Tarfin\Moka\Events\MokaPaymentEvent;
 use Tarfin\Moka\Events\MokaPaymentFailedEvent;
-use Tarfin\Moka\Events\MokaPaymentSucceeded;
+use Tarfin\Moka\Events\MokaPaymentSucceededEvent;
 use Tarfin\Moka\Models\MokaPayment;
 
-it('confirms MokaPaymentSucceeded is a subclass of MokaPaymentEvent', function () {
-    expect(new MokaPaymentSucceeded(MokaPayment::factory()->make()))
+it('confirms MokaPaymentSucceededEvent is a subclass of MokaPaymentEvent', function () {
+    expect(new MokaPaymentSucceededEvent(MokaPayment::factory()->make()))
         ->toBeInstanceOf(MokaPaymentEvent::class);
 });
 
@@ -24,7 +24,7 @@ it('correctly stores the MokaPayment in the event', function () {
         'amount' => 150.75,
     ]);
 
-    $successEvent = new MokaPaymentSucceeded($payment);
+    $successEvent = new MokaPaymentSucceededEvent($payment);
     $failedEvent = new MokaPaymentFailedEvent($payment);
 
     expect($successEvent->mokaPayment)->toBeInstanceOf(MokaPayment::class)
