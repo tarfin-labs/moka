@@ -270,15 +270,15 @@ it('stores failed payment data in database when enabled in config', function ():
 
     try {
         $payment->create(
-            amount:         100.00,
+            amount: 100.00,
             cardHolderName: 'John Doe',
-            cardNumber:     '5555555555555555',
-            expMonth:       '12',
-            expYear:        '2025',
-            cvc:            '123',
-            software:       'Tarfin',
-            returnUrl:      'https://your-site.com/moka-callback',
-            otherTrxCode:   $otherTrxCode
+            cardNumber: '5555555555555555',
+            expMonth: '12',
+            expYear: '2025',
+            cvc: '123',
+            software: 'Tarfin',
+            returnUrl: 'https://your-site.com/moka-callback',
+            otherTrxCode: $otherTrxCode
         );
     } catch (MokaPaymentThreeDException $e) {
         $this->assertDatabaseHas('moka_payments', [
@@ -314,15 +314,15 @@ it('does not store failed payment data in database when disabled in config', fun
 
     try {
         $payment->create(
-            amount:         100.00,
+            amount: 100.00,
             cardHolderName: 'John Doe',
-            cardNumber:     '5555555555555555',
-            expMonth:       '12',
-            expYear:        '2025',
-            cvc:            '123',
-            software:       'Tarfin',
-            returnUrl:      'https://your-site.com/moka-callback',
-            otherTrxCode:   $otherTrxCode
+            cardNumber: '5555555555555555',
+            expMonth: '12',
+            expYear: '2025',
+            cvc: '123',
+            software: 'Tarfin',
+            returnUrl: 'https://your-site.com/moka-callback',
+            otherTrxCode: $otherTrxCode
         );
     } catch (MokaPaymentThreeDException $e) {
         $this->assertDatabaseMissing('moka_payments', [
