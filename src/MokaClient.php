@@ -16,7 +16,7 @@ class MokaClient
         return new MokaPaymentThreeD();
     }
 
-    public function  binInquiry(): MokaBinInquiry
+    public function binInquiry(): MokaBinInquiry
     {
         return new MokaBinInquiry();
     }

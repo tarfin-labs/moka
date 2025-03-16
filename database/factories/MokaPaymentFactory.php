@@ -17,15 +17,15 @@ class MokaPaymentFactory extends Factory
         $amount = $this->faker->randomFloat(2, 1, 1000);
 
         return [
-            'other_trx_code' => $this->faker->unique()->numerify('##########'),
-            'code_for_hash'  => $this->faker->regexify('[A-Z0-9]{5}'),
-            'status'         => MokaPaymentStatus::PENDING,
-            'amount'         => $amount,
-            'amount_charged'         => $amount * 1.5,
-            'amount_commission'         => $amount * 0.5,
-            'result_code'    => '',
-            'result_message' => '',
-            'trx_code'       => null,
+            'other_trx_code'    => $this->faker->unique()->numerify('##########'),
+            'code_for_hash'     => $this->faker->regexify('[A-Z0-9]{5}'),
+            'status'            => MokaPaymentStatus::PENDING,
+            'amount'            => $amount,
+            'amount_charged'    => $amount * 1.5,
+            'amount_commission' => $amount * 0.5,
+            'result_code'       => '',
+            'result_message'    => '',
+            'trx_code'          => null,
         ];
     }
 }

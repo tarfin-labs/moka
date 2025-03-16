@@ -32,9 +32,9 @@ class MokaPayment extends Model
         'three_d',
     ];
     protected $casts = [
-        'status'         => MokaPaymentStatus::class,
-        'amount'         => 'decimal:2',
-        'amount_charged' => 'decimal:2',
+        'status'            => MokaPaymentStatus::class,
+        'amount'            => 'decimal:2',
+        'amount_charged'    => 'decimal:2',
         'amount_commission' => 'decimal:2',
     ];
 

@@ -85,17 +85,17 @@ class MokaPaymentThreeD extends MokaRequest
         $response = $this->sendRequest(self::ENDPOINT_CREATE, $paymentData);
 
         $paymentData = [
-            'other_trx_code' => $paymentData['PaymentDealerRequest']['OtherTrxCode'],
-            'card_type'      => $cardInfo['card_type'],
-            'card_last_four' => $cardInfo['card_last_four'],
-            'card_holder'    => $cardHolderName,
-            'amount'         => $amount,
-            'amount_charged' => $paymentAmount['DealerDepositAmount'],
+            'other_trx_code'    => $paymentData['PaymentDealerRequest']['OtherTrxCode'],
+            'card_type'         => $cardInfo['card_type'],
+            'card_last_four'    => $cardInfo['card_last_four'],
+            'card_holder'       => $cardHolderName,
+            'amount'            => $amount,
+            'amount_charged'    => $paymentAmount['DealerDepositAmount'],
             'amount_commission' => $paymentAmount['DealerCommissionAmount'],
-            'result_code'    => $response['ResultCode'],
-            'result_message' => trans()->has('moka::payment-three-d.'.$response['ResultCode']) ? __('moka::payment-three-d.'.$response['ResultCode']) : $response['ResultMessage'],
-            'installment'    => $installment,
-            'three_d'        => 1,
+            'result_code'       => $response['ResultCode'],
+            'result_message'    => trans()->has('moka::payment-three-d.'.$response['ResultCode']) ? __('moka::payment-three-d.'.$response['ResultCode']) : $response['ResultMessage'],
+            'installment'       => $installment,
+            'three_d'           => 1,
         ];
 
         if ($response['ResultCode'] !== 'Success') {
