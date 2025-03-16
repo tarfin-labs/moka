@@ -21,7 +21,8 @@ class MokaPaymentFactory extends Factory
             'code_for_hash'  => $this->faker->regexify('[A-Z0-9]{5}'),
             'status'         => MokaPaymentStatus::PENDING,
             'amount'         => $amount,
-            'result_code'    => $amount * 1.5,
+            'amount_charged'         => $amount * 1.5,
+            'result_code'    => '',
             'result_message' => '',
             'trx_code'       => null,
         ];
