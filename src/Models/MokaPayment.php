@@ -24,7 +24,8 @@ class MokaPayment extends Model
         'code_for_hash',
         'status',
         'amount',
-        'charged_amount',
+        'amount_charged',
+        'amount_commission',
         'installment',
         'result_code',
         'result_message',
@@ -33,7 +34,8 @@ class MokaPayment extends Model
     protected $casts = [
         'status'         => MokaPaymentStatus::class,
         'amount'         => 'decimal:2',
-        'charged_amount' => 'decimal:2',
+        'amount_charged' => 'decimal:2',
+        'amount_commission' => 'decimal:2',
     ];
 
     protected static function newFactory(): MokaPaymentFactory
