@@ -428,6 +428,38 @@ it('does not store failed payment data in database when disabled in config', fun
             'Exception'     => null,
         ]),
         'service.refmoka.com/PaymentDealer/GetBankCardInformation' => Http::response($this->mockCardInformation),
+        'service.refmoka.com/PaymentDealer/DoCalcPaymentAmount'    => [
+            'Data' => [
+                'PaymentAmount'                    => 102.04,
+                'DealerDepositAmount'              => 100.0,
+                'DealerCommissionRate'             => 2.0,
+                'DealerCommissionAmount'           => 2.04,
+                'DealerCommissionFixedAmount'      => 0.0,
+                'DealerGroupCommissionRate'        => 2.0,
+                'DealerGroupCommissionAmount'      => 2.04,
+                'DealerGroupCommissionFixedAmount' => 0.0,
+                'GroupRevenueRate'                 => 0.0,
+                'GroupRevenueAmount'               => 0.0,
+                'BankCard'                         => [
+                    'BankId'               => 4,
+                    'BankName'             => 'AKBANK',
+                    'BankCode'             => '46',
+                    'BinNumber'            => '512754',
+                    'CardName'             => 'Wings Basic MC ',
+                    'CardType'             => 'MASTER',
+                    'CreditType'           => 'CreditCard',
+                    'CardLogo'             => 'https://cdn.moka.com/Content/BankLogo/AXESS.png',
+                    'CardTemplate'         => 'https://cdn.moka.com/Content/BankCardTemplate/AKBANK-MASTER-CREDIT.png',
+                    'ProductCategory'      => 'Bireysel',
+                    'GroupName'            => 'AXESS',
+                    'MaxInstallmentNumber' => 0,
+                    'BinCountry'           => null,
+                ],
+            ],
+            'ResultCode'    => 'Success',
+            'ResultMessage' => '',
+            'Exception'     => null,
+        ],
     ]);
 
     $payment      = app(MokaPaymentThreeD::class);
