@@ -91,6 +91,7 @@ class MokaPaymentThreeD extends MokaRequest
             'card_holder'    => $cardHolderName,
             'amount'         => $amount,
             'amount_charged' => $paymentAmount['DealerDepositAmount'],
+            'amount_commission' => $paymentAmount['DealerCommissionAmount'],
             'result_code'    => $response['ResultCode'],
             'result_message' => trans()->has('moka::payment-three-d.'.$response['ResultCode']) ? __('moka::payment-three-d.'.$response['ResultCode']) : $response['ResultMessage'],
             'installment'    => $installment,
