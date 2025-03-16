@@ -14,12 +14,14 @@ class MokaPaymentFactory extends Factory
 
     public function definition(): array
     {
+        $amount = $this->faker->randomFloat(2, 1, 1000);
+
         return [
             'other_trx_code' => $this->faker->unique()->numerify('##########'),
             'code_for_hash'  => $this->faker->regexify('[A-Z0-9]{5}'),
             'status'         => MokaPaymentStatus::PENDING,
-            'amount'         => $this->faker->randomFloat(2, 1, 1000),
-            'result_code'    => '',
+            'amount'         => $amount,
+            'result_code'    => $amount * 1.5,
             'result_message' => '',
             'trx_code'       => null,
         ];
