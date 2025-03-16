@@ -55,22 +55,22 @@ it('can create a 3D secure payment request with all parameters', function (): vo
     $otherTrxCode = 'test-transaction-123';
 
     $result = $payment->create(
-        amount: 100.00,
+        amount:         100.00,
         cardHolderName: 'John Doe',
-        cardNumber: '5555555555555555',
-        expMonth: '12',
-        expYear: '2025',
-        cvc: '123',
-        returnUrl: 'https://your-site.com/moka-callback',
-        software: 'Tarfin',
-        installment: 3,
-        otherTrxCode: $otherTrxCode,
-        isPoolPayment: 1,
-        isTokenized: 1,
-        currency: 'USD',
-        redirectType: 2,
-        language: 'EN',
-        description: 'Test Payment Transaction'
+        cardNumber:     '5555555555555555',
+        expMonth:       '12',
+        expYear:        '2025',
+        cvc:            '123',
+        software:       'Tarfin',
+        returnUrl:      'https://your-site.com/moka-callback',
+        installment:    3,
+        otherTrxCode:   $otherTrxCode,
+        isPoolPayment:  1,
+        isTokenized:    1,
+        currency:       'USD',
+        redirectType:   2,
+        language:       'EN',
+        description:    'Test Payment Transaction'
     );
 
     Http::assertSent(function ($request) use ($otherTrxCode) {
