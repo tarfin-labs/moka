@@ -49,31 +49,63 @@ it('can create a 3D secure payment request with all parameters', function (): vo
             ],
         ]),
         'service.refmoka.com/PaymentDealer/GetBankCardInformation' => Http::response($this->mockCardInformation),
+        'service.refmoka.com/PaymentDealer/DoCalcPaymentAmount'    => [
+            'Data' => [
+                'PaymentAmount'                    => 102.04,
+                'DealerDepositAmount'              => 100.0,
+                'DealerCommissionRate'             => 2.0,
+                'DealerCommissionAmount'           => 2.04,
+                'DealerCommissionFixedAmount'      => 0.0,
+                'DealerGroupCommissionRate'        => 2.0,
+                'DealerGroupCommissionAmount'      => 2.04,
+                'DealerGroupCommissionFixedAmount' => 0.0,
+                'GroupRevenueRate'                 => 0.0,
+                'GroupRevenueAmount'               => 0.0,
+                'BankCard'                         => [
+                    'BankId'               => 4,
+                    'BankName'             => 'AKBANK',
+                    'BankCode'             => '46',
+                    'BinNumber'            => '512754',
+                    'CardName'             => 'Wings Basic MC ',
+                    'CardType'             => 'MASTER',
+                    'CreditType'           => 'CreditCard',
+                    'CardLogo'             => 'https://cdn.moka.com/Content/BankLogo/AXESS.png',
+                    'CardTemplate'         => 'https://cdn.moka.com/Content/BankCardTemplate/AKBANK-MASTER-CREDIT.png',
+                    'ProductCategory'      => 'Bireysel',
+                    'GroupName'            => 'AXESS',
+                    'MaxInstallmentNumber' => 0,
+                    'BinCountry'           => null,
+                ],
+            ],
+            'ResultCode'    => 'Success',
+            'ResultMessage' => '',
+            'Exception'     => null,
+        ],
     ]);
 
     $payment      = app(MokaPaymentThreeD::class);
     $otherTrxCode = 'test-transaction-123';
 
     $result = $payment->create(
-        amount:         100.00,
+        amount: 100.00,
         cardHolderName: 'John Doe',
-        cardNumber:     '5555555555555555',
-        expMonth:       '12',
-        expYear:        '2025',
-        cvc:            '123',
-        software:       'Tarfin',
-        returnUrl:      'https://your-site.com/moka-callback',
-        installment:    3,
-        otherTrxCode:   $otherTrxCode,
-        isPoolPayment:  1,
-        isTokenized:    1,
-        currency:       'USD',
-        redirectType:   2,
-        language:       'EN',
-        description:    'Test Payment Transaction'
+        cardNumber: '5555555555555555',
+        expMonth: '12',
+        expYear: '2025',
+        cvc: '123',
+        software: 'Tarfin',
+        returnUrl: 'https://your-site.com/moka-callback',
+        installment: 3,
+        otherTrxCode: $otherTrxCode,
+        isPoolPayment: 1,
+        isTokenized: 1,
+        currency: 'USD',
+        redirectType: 2,
+        language: 'EN',
+        description: 'Test Payment Transaction'
     );
 
-    Http::assertSent(function ($request) use ($otherTrxCode) {
+    Http::assertSent(static function ($request) use ($otherTrxCode) {
         return $request->url() === 'https://service.refmoka.com/PaymentDealer/DoDirectPaymentThreeD'
             && $request['PaymentDealerAuthentication']['DealerCode'] === 'test_dealer'
             && $request['PaymentDealerAuthentication']['Username'] === 'test_user'
