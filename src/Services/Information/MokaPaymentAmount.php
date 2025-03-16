@@ -1,9 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tarfin\Moka\Services\Information;
 
-use Tarfin\Moka\Exceptions\MokaPaymentAmountException;
 use Tarfin\Moka\MokaRequest;
+use Tarfin\Moka\Exceptions\MokaPaymentAmountException;
 
 class MokaPaymentAmount extends MokaRequest
 {
@@ -18,13 +20,13 @@ class MokaPaymentAmount extends MokaRequest
     ): array {
         $requestData = [
             'PaymentDealerRequest' => [
-                'BinNumber' => $binNumber,
-                'Currency' => $currency ?? config('moka.currency'),
-                'OrderAmount' => $amount,
-                'InstallmentNumber' => $installment,
-                'GroupRevenueRate' => 0,
+                'BinNumber'          => $binNumber,
+                'Currency'           => $currency ?? config('moka.currency'),
+                'OrderAmount'        => $amount,
+                'InstallmentNumber'  => $installment,
+                'GroupRevenueRate'   => 0,
                 'GroupRevenueAmount' => 0,
-                'IsThreeD' => $isThreeD,
+                'IsThreeD'           => $isThreeD,
             ],
         ];
 

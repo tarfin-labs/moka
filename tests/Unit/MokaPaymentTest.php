@@ -1,13 +1,15 @@
 <?php
 
-use Tarfin\Moka\Enums\MokaPaymentStatus;
-use Tarfin\Moka\Models\MokaPayment;
+declare(strict_types=1);
 
-it('handles successful 3D callback', function () {
+use Tarfin\Moka\Models\MokaPayment;
+use Tarfin\Moka\Enums\MokaPaymentStatus;
+
+it('handles successful 3D callback', function (): void {
     $payment = MokaPayment::factory()->create([
         'other_trx_code' => 'test-transaction-123',
-        'code_for_hash' => 'test-hash-code',
-        'amount' => 100.00,
+        'code_for_hash'  => 'test-hash-code',
+        'amount'         => 100.00,
     ]);
 
     $hashValue = hash('sha256', 'TEST-HASH-CODE'.'T');
@@ -27,11 +29,11 @@ it('handles successful 3D callback', function () {
         ->and($result->result_message)->toBe('');
 });
 
-it('handles failed 3D callback', function () {
+it('handles failed 3D callback', function (): void {
     $payment = MokaPayment::factory()->create([
         'other_trx_code' => 'test-transaction-123',
-        'code_for_hash' => 'test-hash-code',
-        'amount' => 100.00,
+        'code_for_hash'  => 'test-hash-code',
+        'amount'         => 100.00,
     ]);
 
     $hashValue = hash('sha256', 'TEST-HASH-CODE'.'F');
@@ -51,11 +53,11 @@ it('handles failed 3D callback', function () {
         ->and($result->result_message)->toBe('Insufficient funds');
 });
 
-it('handles invalid hash as failed payment', function () {
+it('handles invalid hash as failed payment', function (): void {
     $payment = MokaPayment::factory()->create([
         'other_trx_code' => 'test-transaction-123',
-        'code_for_hash' => 'test-hash-code',
-        'amount' => 100.00,
+        'code_for_hash'  => 'test-hash-code',
+        'amount'         => 100.00,
     ]);
 
     $invalidHashValue = 'invalid-hash';

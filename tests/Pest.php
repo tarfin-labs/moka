@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use Tests\TestCase;
 
 uses(TestCase::class)->in('Feature', 'Unit');
@@ -30,7 +32,7 @@ expect()->extend('toBeOne', function () {
 |
 */
 
-function something()
+function something(): void
 {
     // ..
 }

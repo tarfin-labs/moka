@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tarfin\Moka\Models;
 
 use Illuminate\Database\Eloquent\Model;

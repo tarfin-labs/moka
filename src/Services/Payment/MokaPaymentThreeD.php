@@ -1,15 +1,17 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tarfin\Moka\Services\Payment;
 
-use Illuminate\Http\RedirectResponse;
-use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Str;
-use Tarfin\Moka\Enums\MokaPaymentStatus;
-use Tarfin\Moka\Exceptions\MokaPaymentThreeDException;
+use Tarfin\Moka\MokaRequest;
 use Tarfin\Moka\Facades\Moka;
 use Tarfin\Moka\Models\MokaPayment;
-use Tarfin\Moka\MokaRequest;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Redirect;
+use Tarfin\Moka\Enums\MokaPaymentStatus;
+use Tarfin\Moka\Exceptions\MokaPaymentThreeDException;
 
 class MokaPaymentThreeD extends MokaRequest
 {
@@ -40,25 +42,25 @@ class MokaPaymentThreeD extends MokaRequest
         $paymentData = [
             'PaymentDealerRequest' => [
                 'CardHolderFullName' => $cardHolderName,
-                'CardNumber' => $cardNumber,
-                'ExpMonth' => $expMonth,
-                'ExpYear' => $expYear,
-                'CvcNumber' => $cvc,
-                'Amount' => $amount,
-                'Currency' => $currency ?? config('moka.currency'),
-                'InstallmentNumber' => $installment,
-                'ClientIP' => request()->ip(),
-                'RedirectUrl' => $returnUrl ?? route('moka-callback.handle3D'),
-                'RedirectType' => $redirectType ?? config('moka.redirect_type'),
-                'Software' => $software ?? config('moka.software'),
-                'OtherTrxCode' => $otherTrxCode ?? Str::ulid()->toString(),
-                'IsPoolPayment' => $isPoolPayment ?? config('moka.is_pool_payment'),
-                'IsTokenized' => $isTokenized ?? config('moka.is_tokenized'),
-                'Language' => $language ?? config('moka.language'),
-                'IsPreAuth' => $isPreAuth ?? config('moka.is_pre_auth'),
-                'ReturnHash' => 1,
-                'Description' => $description,
-                'CardToken' => $cardToken,
+                'CardNumber'         => $cardNumber,
+                'ExpMonth'           => $expMonth,
+                'ExpYear'            => $expYear,
+                'CvcNumber'          => $cvc,
+                'Amount'             => $amount,
+                'Currency'           => $currency ?? config('moka.currency'),
+                'InstallmentNumber'  => $installment,
+                'ClientIP'           => request()->ip(),
+                'RedirectUrl'        => $returnUrl ?? route('moka-callback.handle3D'),
+                'RedirectType'       => $redirectType ?? config('moka.redirect_type'),
+                'Software'           => $software ?? config('moka.software'),
+                'OtherTrxCode'       => $otherTrxCode ?? Str::ulid()->toString(),
+                'IsPoolPayment'      => $isPoolPayment ?? config('moka.is_pool_payment'),
+                'IsTokenized'        => $isTokenized ?? config('moka.is_tokenized'),
+                'Language'           => $language ?? config('moka.language'),
+                'IsPreAuth'          => $isPreAuth ?? config('moka.is_pre_auth'),
+                'ReturnHash'         => 1,
+                'Description'        => $description,
+                'CardToken'          => $cardToken,
             ],
         ];
 
@@ -72,14 +74,14 @@ class MokaPaymentThreeD extends MokaRequest
 
         $paymentData = [
             'other_trx_code' => $paymentData['PaymentDealerRequest']['OtherTrxCode'],
-            'card_type' => $cardInfo['card_type'],
+            'card_type'      => $cardInfo['card_type'],
             'card_last_four' => $cardInfo['card_last_four'],
-            'card_holder' => $cardHolderName,
-            'amount' => $amount,
-            'result_code' => $response['ResultCode'],
+            'card_holder'    => $cardHolderName,
+            'amount'         => $amount,
+            'result_code'    => $response['ResultCode'],
             'result_message' => trans()->has('moka::payment-three-d.'.$response['ResultCode']) ? __('moka::payment-three-d.'.$response['ResultCode']) : $response['ResultMessage'],
-            'installment' => $installment,
-            'three_d' => 1,
+            'installment'    => $installment,
+            'three_d'        => 1,
         ];
 
         if ($response['ResultCode'] !== 'Success') {
@@ -97,7 +99,7 @@ class MokaPaymentThreeD extends MokaRequest
 
         MokaPayment::create(array_merge($paymentData, [
             'code_for_hash' => $response['Data']['CodeForHash'],
-            'status' => MokaPaymentStatus::PENDING,
+            'status'        => MokaPaymentStatus::PENDING,
         ]));
 
         return Redirect::away($response['Data']['Url']);
@@ -110,10 +112,10 @@ class MokaPaymentThreeD extends MokaRequest
         ?string $address = null
     ): self {
         $this->buyerInformation = [
-            'BuyerFullName' => $fullName,
+            'BuyerFullName'  => $fullName,
             'BuyerGsmNumber' => $gsmNumber,
-            'BuyerEmail' => $email,
-            'BuyerAddress' => $address,
+            'BuyerEmail'     => $email,
+            'BuyerAddress'   => $address,
         ];
 
         return $this;
@@ -122,10 +124,10 @@ class MokaPaymentThreeD extends MokaRequest
     public function getCardInfo(string $cardNumber): array
     {
         $binNumber = substr($cardNumber, 0, 6);
-        $response = Moka::binInquiry()->get($binNumber);
+        $response  = Moka::binInquiry()->get($binNumber);
 
         return [
-            'card_type' => $response['CardType'],
+            'card_type'      => $response['CardType'],
             'card_last_four' => substr($cardNumber, -4),
         ];
     }

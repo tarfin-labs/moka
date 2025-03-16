@@ -1,35 +1,37 @@
 <?php
 
+declare(strict_types=1);
+
+use Tarfin\Moka\Facades\Moka;
 use Illuminate\Http\Client\Request;
 use Illuminate\Support\Facades\Http;
 use Tarfin\Moka\Exceptions\MokaBinInquiryException;
-use Tarfin\Moka\Facades\Moka;
 
-beforeEach(function () {
+beforeEach(function (): void {
     config([
-        'moka.dealer_code' => 'test_dealer',
-        'moka.username' => 'test_user',
-        'moka.password' => 'test_pass',
-        'moka.check_key' => 'test_check_key',
+        'moka.dealer_code'  => 'test_dealer',
+        'moka.username'     => 'test_user',
+        'moka.password'     => 'test_pass',
+        'moka.check_key'    => 'test_check_key',
         'moka.sandbox_mode' => true,
     ]);
 });
 
-it('can get bin inquiry successfully', function () {
+it('can get bin inquiry successfully', function (): void {
     $mockResponse = [
-        'ResultCode' => 'Success',
+        'ResultCode'    => 'Success',
         'ResultMessage' => '',
-        'Data' => [
-            'BankName' => 'FİNANSBANK',
-            'BankCode' => '111',
-            'BinNumber' => '526911',
-            'CardName' => '',
-            'CardType' => 'MASTER',
-            'CreditType' => 'CreditCard',
-            'CardLogo' => 'https://cdn.moka.com/Content/BankLogo/CARDFINANS.png',
-            'CardTemplate' => 'https://cdn.moka.com/Content/BankCardTemplate/FINANS-MASTER-CREDIT.png',
+        'Data'          => [
+            'BankName'        => 'FİNANSBANK',
+            'BankCode'        => '111',
+            'BinNumber'       => '526911',
+            'CardName'        => '',
+            'CardType'        => 'MASTER',
+            'CreditType'      => 'CreditCard',
+            'CardLogo'        => 'https://cdn.moka.com/Content/BankLogo/CARDFINANS.png',
+            'CardTemplate'    => 'https://cdn.moka.com/Content/BankCardTemplate/FINANS-MASTER-CREDIT.png',
             'ProductCategory' => 'Bireysel',
-            'GroupName' => 'CARDFINANS',
+            'GroupName'       => 'CARDFINANS',
         ],
         'Exception' => null,
     ];
@@ -49,12 +51,12 @@ it('can get bin inquiry successfully', function () {
     expect($result)->toBe($mockResponse['Data']);
 });
 
-it('throws exception when bin inquiry fails', function () {
+it('throws exception when bin inquiry fails', function (): void {
     $mockResponse = [
-        'Data' => null,
-        'ResultCode' => 'PaymentDealer.GetBankCardInformation.BinNumberNotFound',
+        'Data'          => null,
+        'ResultCode'    => 'PaymentDealer.GetBankCardInformation.BinNumberNotFound',
         'ResultMessage' => '',
-        'Exception' => null,
+        'Exception'     => null,
     ];
 
     Http::fake([
@@ -62,7 +64,7 @@ it('throws exception when bin inquiry fails', function () {
     ]);
 
     expect(fn () => Moka::binInquiry()->get('123456'))
-        ->toThrow(function (MokaBinInquiryException $exception) {
+        ->toThrow(function (MokaBinInquiryException $exception): void {
             expect($exception->getMessage())->toBe(__('moka::bin-inquiry.PaymentDealer.GetBankCardInformation.BinNumberNotFound'))
                 ->and($exception->getCode())->toBe('PaymentDealer.GetBankCardInformation.BinNumberNotFound');
         });
