@@ -19,6 +19,10 @@ class MokaPaymentThreeD extends MokaRequest
 
     private ?array $buyerInformation = null;
 
+    /**
+     * @throws \Tarfin\Moka\Exceptions\MokaPaymentThreeDException
+     * @throws \Tarfin\Moka\Exceptions\MokaBinInquiryException
+     */
     public function create(
         float $amount,
         string $cardHolderName,
@@ -68,9 +72,9 @@ class MokaPaymentThreeD extends MokaRequest
             $paymentData['PaymentDealerRequest']['BuyerInformation'] = $this->buyerInformation;
         }
 
-        $response = $this->sendRequest(self::ENDPOINT_CREATE, $paymentData);
-
         $cardInfo = $this->getCardInfo($cardNumber);
+
+        $response = $this->sendRequest(self::ENDPOINT_CREATE, $paymentData);
 
         $paymentData = [
             'other_trx_code' => $paymentData['PaymentDealerRequest']['OtherTrxCode'],
@@ -121,6 +125,9 @@ class MokaPaymentThreeD extends MokaRequest
         return $this;
     }
 
+    /**
+     * @throws \Tarfin\Moka\Exceptions\MokaBinInquiryException
+     */
     public function getCardInfo(string $cardNumber): array
     {
         $binNumber = substr($cardNumber, 0, 6);
