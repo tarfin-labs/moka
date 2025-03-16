@@ -22,6 +22,7 @@ class MokaPaymentFactory extends Factory
             'status'         => MokaPaymentStatus::PENDING,
             'amount'         => $amount,
             'amount_charged'         => $amount * 1.5,
+            'amount_commission'         => $amount * 0.5,
             'result_code'    => '',
             'result_message' => '',
             'trx_code'       => null,
