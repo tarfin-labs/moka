@@ -22,6 +22,7 @@ class MokaPaymentThreeD extends MokaRequest
     /**
      * @throws \Tarfin\Moka\Exceptions\MokaPaymentThreeDException
      * @throws \Tarfin\Moka\Exceptions\MokaBinInquiryException
+     * @throws \Tarfin\Moka\Exceptions\MokaPaymentAmountException
      */
     public function create(
         float $amount,
@@ -74,6 +75,13 @@ class MokaPaymentThreeD extends MokaRequest
 
         $cardInfo = $this->getCardInfo($cardNumber);
 
+        $paymentAmount = Moka::paymentAmount()->calculate(
+            binNumber: substr($cardNumber, 0, 6),
+            amount: $amount,
+            installment: $installment,
+            currency: $currency ?? config('moka.currency')
+        );
+
         $response = $this->sendRequest(self::ENDPOINT_CREATE, $paymentData);
 
         $paymentData = [
@@ -82,6 +90,7 @@ class MokaPaymentThreeD extends MokaRequest
             'card_last_four' => $cardInfo['card_last_four'],
             'card_holder'    => $cardHolderName,
             'amount'         => $amount,
+            'amount_charged' => $paymentAmount['DealerDepositAmount'],
             'result_code'    => $response['ResultCode'],
             'result_message' => trans()->has('moka::payment-three-d.'.$response['ResultCode']) ? __('moka::payment-three-d.'.$response['ResultCode']) : $response['ResultMessage'],
             'installment'    => $installment,
