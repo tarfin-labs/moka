@@ -1,55 +1,57 @@
 <?php
 
-use Illuminate\Http\RedirectResponse;
-use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Str;
-use Tarfin\Moka\Enums\MokaPaymentStatus;
-use Tarfin\Moka\Exceptions\MokaPaymentThreeDException;
-use Tarfin\Moka\Services\Payment\MokaPaymentThreeD;
+declare(strict_types=1);
 
-beforeEach(function () {
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Http\RedirectResponse;
+use Tarfin\Moka\Enums\MokaPaymentStatus;
+use Tarfin\Moka\Services\Payment\MokaPaymentThreeD;
+use Tarfin\Moka\Exceptions\MokaPaymentThreeDException;
+
+beforeEach(function (): void {
     config([
-        'moka.dealer_code' => 'test_dealer',
-        'moka.username' => 'test_user',
-        'moka.password' => 'test_pass',
-        'moka.check_key' => 'test_check_key',
+        'moka.dealer_code'  => 'test_dealer',
+        'moka.username'     => 'test_user',
+        'moka.password'     => 'test_pass',
+        'moka.check_key'    => 'test_check_key',
         'moka.sandbox_mode' => true,
     ]);
 
     $this->mockCardInformation = [
-        'ResultCode' => 'Success',
+        'ResultCode'    => 'Success',
         'ResultMessage' => '',
-        'Data' => [
-            'BankName' => 'FİNANSBANK',
-            'BankCode' => '111',
-            'BinNumber' => '526911',
-            'CardName' => '',
-            'CardType' => 'MASTER',
-            'CreditType' => 'CreditCard',
-            'CardLogo' => 'https://cdn.moka.com/Content/BankLogo/CARDFINANS.png',
-            'CardTemplate' => 'https://cdn.moka.com/Content/BankCardTemplate/FINANS-MASTER-CREDIT.png',
+        'Data'          => [
+            'BankName'        => 'FİNANSBANK',
+            'BankCode'        => '111',
+            'BinNumber'       => '526911',
+            'CardName'        => '',
+            'CardType'        => 'MASTER',
+            'CreditType'      => 'CreditCard',
+            'CardLogo'        => 'https://cdn.moka.com/Content/BankLogo/CARDFINANS.png',
+            'CardTemplate'    => 'https://cdn.moka.com/Content/BankCardTemplate/FINANS-MASTER-CREDIT.png',
             'ProductCategory' => 'Bireysel',
-            'GroupName' => 'CARDFINANS',
+            'GroupName'       => 'CARDFINANS',
         ],
         'Exception' => null,
     ];
 });
 
-it('can create a 3D secure payment request with all parameters', function () {
+it('can create a 3D secure payment request with all parameters', function (): void {
     Http::fake([
         'service.refmoka.com/PaymentDealer/DoDirectPaymentThreeD' => Http::response([
-            'ResultCode' => 'Success',
+            'ResultCode'    => 'Success',
             'ResultMessage' => '',
-            'Exception' => null,
-            'Data' => [
-                'Url' => 'https://3d-secure-page.com',
+            'Exception'     => null,
+            'Data'          => [
+                'Url'         => 'https://3d-secure-page.com',
                 'CodeForHash' => 'test-hash-code',
             ],
         ]),
         'service.refmoka.com/PaymentDealer/GetBankCardInformation' => Http::response($this->mockCardInformation),
     ]);
 
-    $payment = app(MokaPaymentThreeD::class);
+    $payment      = app(MokaPaymentThreeD::class);
     $otherTrxCode = 'test-transaction-123';
 
     $result = $payment->create(
@@ -94,14 +96,14 @@ it('can create a 3D secure payment request with all parameters', function () {
         ->and($result->getTargetUrl())->toBe('https://3d-secure-page.com');
 });
 
-it('can create a 3D secure payment request with minimal parameters', function () {
+it('can create a 3D secure payment request with minimal parameters', function (): void {
     Http::fake([
         'service.refmoka.com/PaymentDealer/DoDirectPaymentThreeD' => Http::response([
-            'ResultCode' => 'Success',
+            'ResultCode'    => 'Success',
             'ResultMessage' => '',
-            'Exception' => null,
-            'Data' => [
-                'Url' => 'https://3d-secure-page.com',
+            'Exception'     => null,
+            'Data'          => [
+                'Url'         => 'https://3d-secure-page.com',
                 'CodeForHash' => 'test-hash-code',
             ],
         ]),
@@ -139,13 +141,13 @@ it('can create a 3D secure payment request with minimal parameters', function ()
         ->and($result->getTargetUrl())->toBe('https://3d-secure-page.com');
 });
 
-it('throws exception when payment creation fails', function () {
+it('throws exception when payment creation fails', function (): void {
     Http::fake([
         'service.refmoka.com/PaymentDealer/DoDirectPaymentThreeD' => Http::response([
-            'ResultCode' => 'PaymentDealer.CheckCardInfo.InvalidCardInfo',
+            'ResultCode'    => 'PaymentDealer.CheckCardInfo.InvalidCardInfo',
             'ResultMessage' => '',
-            'Data' => null,
-            'Exception' => null,
+            'Data'          => null,
+            'Exception'     => null,
         ]),
         'service.refmoka.com/PaymentDealer/GetBankCardInformation' => Http::response($this->mockCardInformation),
     ]);
@@ -161,27 +163,27 @@ it('throws exception when payment creation fails', function () {
         cvc: '123',
         returnUrl: 'https://your-site.com/moka-callback',
         software: 'Tarfin'
-    ))->toThrow(function (MokaPaymentThreeDException $exception) {
+    ))->toThrow(function (MokaPaymentThreeDException $exception): void {
         expect($exception->getMessage())->toBe(__('moka::payment-three-d.PaymentDealer.CheckCardInfo.InvalidCardInfo'))
             ->and($exception->getCode())->toBe('PaymentDealer.CheckCardInfo.InvalidCardInfo');
     });
 });
 
-it('stores payment data in database when payment is successful', function () {
+it('stores payment data in database when payment is successful', function (): void {
     Http::fake([
         'service.refmoka.com/PaymentDealer/DoDirectPaymentThreeD' => Http::response([
-            'ResultCode' => 'Success',
+            'ResultCode'    => 'Success',
             'ResultMessage' => '',
-            'Exception' => null,
-            'Data' => [
-                'Url' => 'https://3d-secure-page.com',
+            'Exception'     => null,
+            'Data'          => [
+                'Url'         => 'https://3d-secure-page.com',
                 'CodeForHash' => 'test-hash-code',
             ],
         ]),
         'service.refmoka.com/PaymentDealer/GetBankCardInformation' => Http::response($this->mockCardInformation),
     ]);
 
-    $payment = app(MokaPaymentThreeD::class);
+    $payment      = app(MokaPaymentThreeD::class);
     $otherTrxCode = 'test-transaction-123';
 
     $payment->create(
@@ -199,33 +201,33 @@ it('stores payment data in database when payment is successful', function () {
 
     $this->assertDatabaseHas('moka_payments', [
         'other_trx_code' => $otherTrxCode,
-        'code_for_hash' => 'test-hash-code',
-        'amount' => 100.00,
-        'installment' => 3,
-        'status' => MokaPaymentStatus::PENDING->value,
-        'result_code' => 'Success',
+        'code_for_hash'  => 'test-hash-code',
+        'amount'         => 100.00,
+        'installment'    => 3,
+        'status'         => MokaPaymentStatus::PENDING->value,
+        'result_code'    => 'Success',
         'result_message' => '',
-        'three_d' => 1,
-        'card_holder' => 'John Doe',
-        'card_type' => 'MASTER',
+        'three_d'        => 1,
+        'card_holder'    => 'John Doe',
+        'card_type'      => 'MASTER',
         'card_last_four' => '5555',
     ]);
 });
 
-it('stores failed payment data in database when enabled in config', function () {
+it('stores failed payment data in database when enabled in config', function (): void {
     config(['moka.store_failed_payments' => true]);
 
     Http::fake([
         'service.refmoka.com/PaymentDealer/DoDirectPaymentThreeD' => Http::response([
-            'ResultCode' => 'PaymentDealer.CheckCardInfo.InvalidCardInfo',
+            'ResultCode'    => 'PaymentDealer.CheckCardInfo.InvalidCardInfo',
             'ResultMessage' => '',
-            'Data' => null,
-            'Exception' => null,
+            'Data'          => null,
+            'Exception'     => null,
         ]),
         'service.refmoka.com/PaymentDealer/GetBankCardInformation' => Http::response($this->mockCardInformation),
     ]);
 
-    $payment = app(MokaPaymentThreeD::class);
+    $payment      = app(MokaPaymentThreeD::class);
     $otherTrxCode = 'test-transaction-123';
 
     try {
@@ -243,32 +245,32 @@ it('stores failed payment data in database when enabled in config', function () 
     } catch (MokaPaymentThreeDException $e) {
         $this->assertDatabaseHas('moka_payments', [
             'other_trx_code' => $otherTrxCode,
-            'amount' => 100.00,
-            'status' => MokaPaymentStatus::FAILED->value,
-            'result_code' => 'PaymentDealer.CheckCardInfo.InvalidCardInfo',
+            'amount'         => 100.00,
+            'status'         => MokaPaymentStatus::FAILED->value,
+            'result_code'    => 'PaymentDealer.CheckCardInfo.InvalidCardInfo',
             'result_message' => __('moka::payment-three-d.PaymentDealer.CheckCardInfo.InvalidCardInfo'),
-            'three_d' => 1,
-            'card_holder' => 'John Doe',
-            'card_type' => 'MASTER',
+            'three_d'        => 1,
+            'card_holder'    => 'John Doe',
+            'card_type'      => 'MASTER',
             'card_last_four' => '5555',
         ]);
     }
 });
 
-it('does not store failed payment data in database when disabled in config', function () {
+it('does not store failed payment data in database when disabled in config', function (): void {
     config(['moka.store_failed_payments' => false]);
 
     Http::fake([
         'service.refmoka.com/PaymentDealer/DoDirectPaymentThreeD' => Http::response([
-            'ResultCode' => 'PaymentDealer.CheckCardInfo.InvalidCardInfo',
+            'ResultCode'    => 'PaymentDealer.CheckCardInfo.InvalidCardInfo',
             'ResultMessage' => '',
-            'Data' => null,
-            'Exception' => null,
+            'Data'          => null,
+            'Exception'     => null,
         ]),
         'service.refmoka.com/PaymentDealer/GetBankCardInformation' => Http::response($this->mockCardInformation),
     ]);
 
-    $payment = app(MokaPaymentThreeD::class);
+    $payment      = app(MokaPaymentThreeD::class);
     $otherTrxCode = 'test-transaction-123';
 
     try {
@@ -290,14 +292,14 @@ it('does not store failed payment data in database when disabled in config', fun
     }
 });
 
-it('can create a 3D secure payment request with buyer information', function () {
+it('can create a 3D secure payment request with buyer information', function (): void {
     Http::fake([
         'service.refmoka.com/PaymentDealer/DoDirectPaymentThreeD' => Http::response([
-            'ResultCode' => 'Success',
+            'ResultCode'    => 'Success',
             'ResultMessage' => '',
-            'Exception' => null,
-            'Data' => [
-                'Url' => 'https://3d-secure-page.com',
+            'Exception'     => null,
+            'Data'          => [
+                'Url'         => 'https://3d-secure-page.com',
                 'CodeForHash' => 'test-hash-code',
             ],
         ]),
@@ -335,14 +337,14 @@ it('can create a 3D secure payment request with buyer information', function () 
         ->and($result->getTargetUrl())->toBe('https://3d-secure-page.com');
 });
 
-it('can create a 3D secure payment request with partial buyer information', function () {
+it('can create a 3D secure payment request with partial buyer information', function (): void {
     Http::fake([
         'service.refmoka.com/PaymentDealer/DoDirectPaymentThreeD' => Http::response([
-            'ResultCode' => 'Success',
+            'ResultCode'    => 'Success',
             'ResultMessage' => '',
-            'Exception' => null,
-            'Data' => [
-                'Url' => 'https://3d-secure-page.com',
+            'Exception'     => null,
+            'Data'          => [
+                'Url'         => 'https://3d-secure-page.com',
                 'CodeForHash' => 'test-hash-code',
             ],
         ]),

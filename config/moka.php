@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 return [
     /*
     |--------------------------------------------------------------------------
@@ -7,16 +9,16 @@ return [
     |--------------------------------------------------------------------------
     */
     'dealer_code' => env('MOKA_DEALER_CODE'),
-    'username' => env('MOKA_USERNAME'),
-    'password' => env('MOKA_PASSWORD'),
+    'username'    => env('MOKA_USERNAME'),
+    'password'    => env('MOKA_PASSWORD'),
 
     /*
     |--------------------------------------------------------------------------
     | Moka API URLs
     |--------------------------------------------------------------------------
     */
-    'sandbox_mode' => env('MOKA_SANDBOX_MODE', true),
-    'sandbox_url' => 'https://service.refmoka.com',
+    'sandbox_mode'   => env('MOKA_SANDBOX_MODE', true),
+    'sandbox_url'    => 'https://service.refmoka.com',
     'production_url' => 'https://service.moka.com',
 
     /*
@@ -25,13 +27,13 @@ return [
     |--------------------------------------------------------------------------
     */
     'store_failed_payments' => env('MOKA_STORE_FAILED_PAYMENTS', false),
-    'software' => env('MOKA_SOFTWARE', ''),
-    'is_pool_payment' => env('MOKA_IS_POOL_PAYMENT', 0),
-    'is_tokenized' => env('MOKA_IS_TOKENIZED', 0),
-    'currency' => env('MOKA_CURRENCY', 'TL'),
-    'redirect_type' => env('MOKA_REDIRECT_TYPE', 1),
-    'language' => env('MOKA_LANGUAGE', 'TR'),
-    'is_pre_auth' => env('MOKA_IS_PRE_AUTH', 0),
+    'software'              => env('MOKA_SOFTWARE', ''),
+    'is_pool_payment'       => env('MOKA_IS_POOL_PAYMENT', 0),
+    'is_tokenized'          => env('MOKA_IS_TOKENIZED', 0),
+    'currency'              => env('MOKA_CURRENCY', 'TL'),
+    'redirect_type'         => env('MOKA_REDIRECT_TYPE', 1),
+    'language'              => env('MOKA_LANGUAGE', 'TR'),
+    'is_pre_auth'           => env('MOKA_IS_PRE_AUTH', 0),
 
     /*
     |--------------------------------------------------------------------------

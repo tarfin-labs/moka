@@ -1,15 +1,16 @@
 <?php
 
-use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
+declare(strict_types=1);
+
 use Illuminate\Support\Facades\Schema;
 use Tarfin\Moka\Enums\MokaPaymentStatus;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Database\Migrations\Migration;
 
-return new class extends Migration
-{
+return new class() extends Migration {
     public function up(): void
     {
-        Schema::create('moka_payments', function (Blueprint $table) {
+        Schema::create('moka_payments', function (Blueprint $table): void {
             $table->id();
             $table->string('other_trx_code');
             $table->string('trx_code')->nullable();

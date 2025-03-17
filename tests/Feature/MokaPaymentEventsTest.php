@@ -1,23 +1,25 @@
 <?php
 
+declare(strict_types=1);
+
+use Tarfin\Moka\Models\MokaPayment;
 use Illuminate\Support\Facades\Event;
 use Tarfin\Moka\Enums\MokaPaymentStatus;
 use Tarfin\Moka\Events\MokaPaymentFailedEvent;
 use Tarfin\Moka\Events\MokaPaymentSucceededEvent;
-use Tarfin\Moka\Models\MokaPayment;
 
-beforeEach(function () {
+beforeEach(function (): void {
     Event::fake([
         MokaPaymentSucceededEvent::class,
         MokaPaymentFailedEvent::class,
     ]);
 });
 
-it('dispatches MokaPaymentSucceededEvent event on successful 3D callback', function () {
+it('dispatches MokaPaymentSucceededEvent event on successful 3D callback', function (): void {
     $payment = MokaPayment::factory()->create([
         'other_trx_code' => 'test-transaction-123',
-        'code_for_hash' => 'test-hash-code',
-        'amount' => 100.00,
+        'code_for_hash'  => 'test-hash-code',
+        'amount'         => 100.00,
     ]);
 
     $payment->handle3DCallback(
@@ -35,11 +37,11 @@ it('dispatches MokaPaymentSucceededEvent event on successful 3D callback', funct
     Event::assertNotDispatched(MokaPaymentFailedEvent::class);
 });
 
-it('dispatches MokaPaymentFailedEvent event on failed 3D callback', function () {
+it('dispatches MokaPaymentFailedEvent event on failed 3D callback', function (): void {
     $payment = MokaPayment::factory()->create([
         'other_trx_code' => 'test-transaction-123',
-        'code_for_hash' => 'test-hash-code',
-        'amount' => 100.00,
+        'code_for_hash'  => 'test-hash-code',
+        'amount'         => 100.00,
     ]);
 
     $payment->handle3DCallback(
@@ -56,11 +58,11 @@ it('dispatches MokaPaymentFailedEvent event on failed 3D callback', function () 
     Event::assertNotDispatched(MokaPaymentSucceededEvent::class);
 });
 
-it('dispatches MokaPaymentFailedEvent event when hash validation fails', function () {
+it('dispatches MokaPaymentFailedEvent event when hash validation fails', function (): void {
     $payment = MokaPayment::factory()->create([
         'other_trx_code' => 'test-transaction-123',
-        'code_for_hash' => 'test-hash-code',
-        'amount' => 100.00,
+        'code_for_hash'  => 'test-hash-code',
+        'amount'         => 100.00,
     ]);
 
     $invalidHashValue = 'invalid-hash-value';
@@ -80,11 +82,11 @@ it('dispatches MokaPaymentFailedEvent event when hash validation fails', functio
     Event::assertNotDispatched(MokaPaymentSucceededEvent::class);
 });
 
-it('passes the correct payment object to the event', function () {
+it('passes the correct payment object to the event', function (): void {
     $payment = MokaPayment::factory()->create([
         'other_trx_code' => 'test-transaction-123',
-        'code_for_hash' => 'test-hash-code',
-        'amount' => 100.00,
+        'code_for_hash'  => 'test-hash-code',
+        'amount'         => 100.00,
     ]);
 
     $payment->handle3DCallback(

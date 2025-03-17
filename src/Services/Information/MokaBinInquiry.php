@@ -1,9 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tarfin\Moka\Services\Information;
 
-use Tarfin\Moka\Exceptions\MokaBinInquiryException;
 use Tarfin\Moka\MokaRequest;
+use Tarfin\Moka\Exceptions\MokaBinInquiryException;
 
 class MokaBinInquiry extends MokaRequest
 {

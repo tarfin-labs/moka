@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tarfin\Moka;
 
 use Illuminate\Support\Facades\Http;
@@ -7,7 +9,6 @@ use Illuminate\Support\Facades\Http;
 abstract class MokaRequest
 {
     protected string $baseUrl;
-
     protected array $credentials;
 
     public function __construct()
@@ -17,16 +18,16 @@ abstract class MokaRequest
             : config('moka.production_url');
 
         $dealerCode = config('moka.dealer_code');
-        $username = config('moka.username');
-        $password = config('moka.password');
+        $username   = config('moka.username');
+        $password   = config('moka.password');
 
         $checkKey = hash('sha256', $dealerCode.'MK'.$username.'PD'.$password);
 
         $this->credentials = [
             'DealerCode' => $dealerCode,
-            'Username' => $username,
-            'Password' => $password,
-            'CheckKey' => $checkKey,
+            'Username'   => $username,
+            'Password'   => $password,
+            'CheckKey'   => $checkKey,
         ];
     }
 

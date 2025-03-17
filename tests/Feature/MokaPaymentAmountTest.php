@@ -1,48 +1,50 @@
 <?php
 
+declare(strict_types=1);
+
 use Illuminate\Support\Facades\Http;
 use Tarfin\Moka\Exceptions\MokaPaymentAmountException;
 use Tarfin\Moka\Services\Information\MokaPaymentAmount;
 
-beforeEach(function () {
+beforeEach(function (): void {
     config([
-        'moka.dealer_code' => 'test_dealer',
-        'moka.username' => 'test_user',
-        'moka.password' => 'test_pass',
-        'moka.check_key' => 'test_check_key',
+        'moka.dealer_code'  => 'test_dealer',
+        'moka.username'     => 'test_user',
+        'moka.password'     => 'test_pass',
+        'moka.check_key'    => 'test_check_key',
         'moka.sandbox_mode' => true,
-        'moka.currency' => 'TL',
+        'moka.currency'     => 'TL',
     ]);
 });
 
-it('can calculate payment amount with minimal parameters', function () {
+it('can calculate payment amount with minimal parameters', function (): void {
     Http::fake([
         'https://service.refmoka.com/PaymentDealer/DoCalcPaymentAmount' => Http::response([
-            'ResultCode' => 'Success',
+            'ResultCode'    => 'Success',
             'ResultMessage' => '',
-            'Exception' => null,
-            'Data' => [
-                'PaymentAmount' => 101.56,
-                'DealerDepositAmount' => 95.0,
-                'DealerCommissionRate' => 6.46,
-                'DealerCommissionAmount' => 6.56,
-                'DealerCommissionFixedAmount' => 0.0,
-                'DealerGroupCommissionRate' => 1.54,
-                'DealerGroupCommissionAmount' => 1.56,
+            'Exception'     => null,
+            'Data'          => [
+                'PaymentAmount'                    => 101.56,
+                'DealerDepositAmount'              => 95.0,
+                'DealerCommissionRate'             => 6.46,
+                'DealerCommissionAmount'           => 6.56,
+                'DealerCommissionFixedAmount'      => 0.0,
+                'DealerGroupCommissionRate'        => 1.54,
+                'DealerGroupCommissionAmount'      => 1.56,
                 'DealerGroupCommissionFixedAmount' => 0.0,
-                'GroupRevenueRate' => 5.0,
-                'GroupRevenueAmount' => 5.0,
-                'BankCard' => [
-                    'BankName' => 'FINANSBANK',
-                    'BankCode' => '111',
-                    'BinNumber' => '526911',
-                    'CardName' => '',
-                    'CardType' => 'MASTER',
-                    'CreditType' => 'CreditCard',
-                    'CardLogo' => '',
-                    'CardTemplate' => '',
+                'GroupRevenueRate'                 => 5.0,
+                'GroupRevenueAmount'               => 5.0,
+                'BankCard'                         => [
+                    'BankName'        => 'FINANSBANK',
+                    'BankCode'        => '111',
+                    'BinNumber'       => '526911',
+                    'CardName'        => '',
+                    'CardType'        => 'MASTER',
+                    'CreditType'      => 'CreditCard',
+                    'CardLogo'        => '',
+                    'CardTemplate'    => '',
                     'ProductCategory' => 'Bireysel',
-                    'GroupName' => '',
+                    'GroupName'       => '',
                 ],
             ],
         ]),
@@ -87,34 +89,34 @@ it('can calculate payment amount with minimal parameters', function () {
         ->and($result['BankCard']['CardType'])->toBe('MASTER');
 });
 
-it('can calculate payment amount with all parameters', function () {
+it('can calculate payment amount with all parameters', function (): void {
     Http::fake([
         'https://service.refmoka.com/PaymentDealer/DoCalcPaymentAmount' => Http::response([
-            'ResultCode' => 'Success',
+            'ResultCode'    => 'Success',
             'ResultMessage' => '',
-            'Exception' => null,
-            'Data' => [
-                'PaymentAmount' => 101.56,
-                'DealerDepositAmount' => 95.0,
-                'DealerCommissionRate' => 6.46,
-                'DealerCommissionAmount' => 6.56,
-                'DealerCommissionFixedAmount' => 0.0,
-                'DealerGroupCommissionRate' => 1.54,
-                'DealerGroupCommissionAmount' => 1.56,
+            'Exception'     => null,
+            'Data'          => [
+                'PaymentAmount'                    => 101.56,
+                'DealerDepositAmount'              => 95.0,
+                'DealerCommissionRate'             => 6.46,
+                'DealerCommissionAmount'           => 6.56,
+                'DealerCommissionFixedAmount'      => 0.0,
+                'DealerGroupCommissionRate'        => 1.54,
+                'DealerGroupCommissionAmount'      => 1.56,
                 'DealerGroupCommissionFixedAmount' => 0.0,
-                'GroupRevenueRate' => 5.0,
-                'GroupRevenueAmount' => 5.0,
-                'BankCard' => [
-                    'BankName' => 'FINANSBANK',
-                    'BankCode' => '111',
-                    'BinNumber' => '526911',
-                    'CardName' => '',
-                    'CardType' => 'MASTER',
-                    'CreditType' => 'CreditCard',
-                    'CardLogo' => '',
-                    'CardTemplate' => '',
+                'GroupRevenueRate'                 => 5.0,
+                'GroupRevenueAmount'               => 5.0,
+                'BankCard'                         => [
+                    'BankName'        => 'FINANSBANK',
+                    'BankCode'        => '111',
+                    'BinNumber'       => '526911',
+                    'CardName'        => '',
+                    'CardType'        => 'MASTER',
+                    'CreditType'      => 'CreditCard',
+                    'CardLogo'        => '',
+                    'CardTemplate'    => '',
                     'ProductCategory' => 'Bireysel',
-                    'GroupName' => '',
+                    'GroupName'       => '',
                 ],
             ],
         ]),
@@ -162,13 +164,13 @@ it('can calculate payment amount with all parameters', function () {
         ->and($result['BankCard']['CardType'])->toBe('MASTER');
 });
 
-it('throws exception when group revenue parameters are invalid', function () {
+it('throws exception when group revenue parameters are invalid', function (): void {
     Http::fake([
         'https://service.refmoka.com/PaymentDealer/DoCalcPaymentAmount' => Http::response([
-            'ResultCode' => 'PaymentDealer.DoCalcPaymentAmount.BothGroupRevenueRateAndGroupRevenueAmountMustBeZero',
+            'ResultCode'    => 'PaymentDealer.DoCalcPaymentAmount.BothGroupRevenueRateAndGroupRevenueAmountMustBeZero',
             'ResultMessage' => '',
-            'Data' => null,
-            'Exception' => null,
+            'Data'          => null,
+            'Exception'     => null,
         ]),
     ]);
 
@@ -177,7 +179,7 @@ it('throws exception when group revenue parameters are invalid', function () {
     expect(fn () => $paymentAmount->calculate(
         binNumber: '555555',
         amount: 100.00
-    ))->toThrow(function (MokaPaymentAmountException $exception) {
+    ))->toThrow(function (MokaPaymentAmountException $exception): void {
         expect($exception->getMessage())->toBe(__('moka::payment-amount.PaymentDealer.DoCalcPaymentAmount.BothGroupRevenueRateAndGroupRevenueAmountMustBeZero'))
             ->and($exception->getCode())->toBe('PaymentDealer.DoCalcPaymentAmount.BothGroupRevenueRateAndGroupRevenueAmountMustBeZero');
     });

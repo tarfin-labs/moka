@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tarfin\Moka;
 
 use Illuminate\Support\ServiceProvider;
@@ -9,7 +11,7 @@ class MokaServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->singleton(MokaClient::class, function () {
-            return new MokaClient;
+            return new MokaClient();
         });
 
         $this->mergeConfigFrom(__DIR__.'/../config/moka.php', 'moka');
