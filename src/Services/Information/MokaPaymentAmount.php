@@ -11,6 +11,9 @@ class MokaPaymentAmount extends MokaRequest
 {
     private const ENDPOINT_CALC_PAYMENT_AMOUNT_INQUIRY = '/PaymentDealer/DoCalcPaymentAmount';
 
+    /**
+     * @throws \Tarfin\Moka\Exceptions\MokaPaymentAmountException
+     */
     public function calculate(
         string $binNumber,
         float $amount,

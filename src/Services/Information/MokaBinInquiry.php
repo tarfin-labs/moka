@@ -11,6 +11,9 @@ class MokaBinInquiry extends MokaRequest
 {
     private const ENDPOINT_BIN_INQUIRY = '/PaymentDealer/GetBankCardInformation';
 
+    /**
+     * @throws \Tarfin\Moka\Exceptions\MokaBinInquiryException
+     */
     public function get(string $binNumber): array
     {
         $requestData = [

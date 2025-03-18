@@ -35,6 +35,39 @@ beforeEach(function (): void {
         ],
         'Exception' => null,
     ];
+
+    $this->mockPaymentAmount = [
+        'Data' => [
+            'PaymentAmount'                    => 102.04,
+            'DealerDepositAmount'              => 100.0,
+            'DealerCommissionRate'             => 2.0,
+            'DealerCommissionAmount'           => 2.04,
+            'DealerCommissionFixedAmount'      => 0.0,
+            'DealerGroupCommissionRate'        => 2.0,
+            'DealerGroupCommissionAmount'      => 2.04,
+            'DealerGroupCommissionFixedAmount' => 0.0,
+            'GroupRevenueRate'                 => 0.0,
+            'GroupRevenueAmount'               => 0.0,
+            'BankCard'                         => [
+                'BankId'               => 4,
+                'BankName'             => 'AKBANK',
+                'BankCode'             => '46',
+                'BinNumber'            => '512754',
+                'CardName'             => 'Wings Basic MC ',
+                'CardType'             => 'MASTER',
+                'CreditType'           => 'CreditCard',
+                'CardLogo'             => 'https://cdn.moka.com/Content/BankLogo/AXESS.png',
+                'CardTemplate'         => 'https://cdn.moka.com/Content/BankCardTemplate/AKBANK-MASTER-CREDIT.png',
+                'ProductCategory'      => 'Bireysel',
+                'GroupName'            => 'AXESS',
+                'MaxInstallmentNumber' => 0,
+                'BinCountry'           => null,
+            ],
+        ],
+        'ResultCode'    => 'Success',
+        'ResultMessage' => '',
+        'Exception'     => null,
+    ];
 });
 
 it('can create a 3D secure payment request with all parameters', function (): void {
@@ -49,6 +82,7 @@ it('can create a 3D secure payment request with all parameters', function (): vo
             ],
         ]),
         'service.refmoka.com/PaymentDealer/GetBankCardInformation' => Http::response($this->mockCardInformation),
+        'service.refmoka.com/PaymentDealer/DoCalcPaymentAmount'    => Http::response($this->mockPaymentAmount),
     ]);
 
     $payment      = app(MokaPaymentThreeD::class);
@@ -61,8 +95,8 @@ it('can create a 3D secure payment request with all parameters', function (): vo
         expMonth: '12',
         expYear: '2025',
         cvc: '123',
-        returnUrl: 'https://your-site.com/moka-callback',
         software: 'Tarfin',
+        returnUrl: 'https://your-site.com/moka-callback',
         installment: 3,
         otherTrxCode: $otherTrxCode,
         isPoolPayment: 1,
@@ -73,7 +107,7 @@ it('can create a 3D secure payment request with all parameters', function (): vo
         description: 'Test Payment Transaction'
     );
 
-    Http::assertSent(function ($request) use ($otherTrxCode) {
+    Http::assertSent(static function ($request) use ($otherTrxCode) {
         return $request->url() === 'https://service.refmoka.com/PaymentDealer/DoDirectPaymentThreeD'
             && $request['PaymentDealerAuthentication']['DealerCode'] === 'test_dealer'
             && $request['PaymentDealerAuthentication']['Username'] === 'test_user'
@@ -108,6 +142,7 @@ it('can create a 3D secure payment request with minimal parameters', function ()
             ],
         ]),
         'service.refmoka.com/PaymentDealer/GetBankCardInformation' => Http::response($this->mockCardInformation),
+        'service.refmoka.com/PaymentDealer/DoCalcPaymentAmount'    => Http::response($this->mockPaymentAmount),
     ]);
 
     $payment = app(MokaPaymentThreeD::class);
@@ -150,6 +185,7 @@ it('throws exception when payment creation fails', function (): void {
             'Exception'     => null,
         ]),
         'service.refmoka.com/PaymentDealer/GetBankCardInformation' => Http::response($this->mockCardInformation),
+        'service.refmoka.com/PaymentDealer/DoCalcPaymentAmount'    => Http::response($this->mockPaymentAmount),
     ]);
 
     $payment = app(MokaPaymentThreeD::class);
@@ -181,6 +217,7 @@ it('stores payment data in database when payment is successful', function (): vo
             ],
         ]),
         'service.refmoka.com/PaymentDealer/GetBankCardInformation' => Http::response($this->mockCardInformation),
+        'service.refmoka.com/PaymentDealer/DoCalcPaymentAmount'    => Http::response($this->mockPaymentAmount),
     ]);
 
     $payment      = app(MokaPaymentThreeD::class);
@@ -225,6 +262,7 @@ it('stores failed payment data in database when enabled in config', function ():
             'Exception'     => null,
         ]),
         'service.refmoka.com/PaymentDealer/GetBankCardInformation' => Http::response($this->mockCardInformation),
+        'service.refmoka.com/PaymentDealer/DoCalcPaymentAmount'    => Http::response($this->mockPaymentAmount),
     ]);
 
     $payment      = app(MokaPaymentThreeD::class);
@@ -238,8 +276,8 @@ it('stores failed payment data in database when enabled in config', function ():
             expMonth: '12',
             expYear: '2025',
             cvc: '123',
-            returnUrl: 'https://your-site.com/moka-callback',
             software: 'Tarfin',
+            returnUrl: 'https://your-site.com/moka-callback',
             otherTrxCode: $otherTrxCode
         );
     } catch (MokaPaymentThreeDException $e) {
@@ -268,6 +306,7 @@ it('does not store failed payment data in database when disabled in config', fun
             'Exception'     => null,
         ]),
         'service.refmoka.com/PaymentDealer/GetBankCardInformation' => Http::response($this->mockCardInformation),
+        'service.refmoka.com/PaymentDealer/DoCalcPaymentAmount'    => Http::response($this->mockPaymentAmount),
     ]);
 
     $payment      = app(MokaPaymentThreeD::class);
@@ -281,8 +320,8 @@ it('does not store failed payment data in database when disabled in config', fun
             expMonth: '12',
             expYear: '2025',
             cvc: '123',
-            returnUrl: 'https://your-site.com/moka-callback',
             software: 'Tarfin',
+            returnUrl: 'https://your-site.com/moka-callback',
             otherTrxCode: $otherTrxCode
         );
     } catch (MokaPaymentThreeDException $e) {
@@ -304,6 +343,7 @@ it('can create a 3D secure payment request with buyer information', function ():
             ],
         ]),
         'service.refmoka.com/PaymentDealer/GetBankCardInformation' => Http::response($this->mockCardInformation),
+        'service.refmoka.com/PaymentDealer/DoCalcPaymentAmount'    => Http::response($this->mockPaymentAmount),
     ]);
 
     $payment = app(MokaPaymentThreeD::class);
@@ -349,6 +389,7 @@ it('can create a 3D secure payment request with partial buyer information', func
             ],
         ]),
         'service.refmoka.com/PaymentDealer/GetBankCardInformation' => Http::response($this->mockCardInformation),
+        'service.refmoka.com/PaymentDealer/DoCalcPaymentAmount'    => Http::response($this->mockPaymentAmount),
     ]);
 
     $payment = app(MokaPaymentThreeD::class);

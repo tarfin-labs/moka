@@ -19,6 +19,11 @@ class MokaPaymentThreeD extends MokaRequest
 
     private ?array $buyerInformation = null;
 
+    /**
+     * @throws \Tarfin\Moka\Exceptions\MokaPaymentThreeDException
+     * @throws \Tarfin\Moka\Exceptions\MokaBinInquiryException
+     * @throws \Tarfin\Moka\Exceptions\MokaPaymentAmountException
+     */
     public function create(
         float $amount,
         string $cardHolderName,
@@ -68,20 +73,29 @@ class MokaPaymentThreeD extends MokaRequest
             $paymentData['PaymentDealerRequest']['BuyerInformation'] = $this->buyerInformation;
         }
 
-        $response = $this->sendRequest(self::ENDPOINT_CREATE, $paymentData);
-
         $cardInfo = $this->getCardInfo($cardNumber);
 
+        $paymentAmount = Moka::paymentAmount()->calculate(
+            binNumber: substr($cardNumber, 0, 6),
+            amount: $amount,
+            installment: $installment,
+            currency: $currency ?? config('moka.currency')
+        );
+
+        $response = $this->sendRequest(self::ENDPOINT_CREATE, $paymentData);
+
         $paymentData = [
-            'other_trx_code' => $paymentData['PaymentDealerRequest']['OtherTrxCode'],
-            'card_type'      => $cardInfo['card_type'],
-            'card_last_four' => $cardInfo['card_last_four'],
-            'card_holder'    => $cardHolderName,
-            'amount'         => $amount,
-            'result_code'    => $response['ResultCode'],
-            'result_message' => trans()->has('moka::payment-three-d.'.$response['ResultCode']) ? __('moka::payment-three-d.'.$response['ResultCode']) : $response['ResultMessage'],
-            'installment'    => $installment,
-            'three_d'        => 1,
+            'other_trx_code'    => $paymentData['PaymentDealerRequest']['OtherTrxCode'],
+            'card_type'         => $cardInfo['card_type'],
+            'card_last_four'    => $cardInfo['card_last_four'],
+            'card_holder'       => $cardHolderName,
+            'amount'            => $amount,
+            'amount_charged'    => $paymentAmount['PaymentAmount'],
+            'amount_commission' => $paymentAmount['DealerCommissionAmount'],
+            'result_code'       => $response['ResultCode'],
+            'result_message'    => trans()->has('moka::payment-three-d.'.$response['ResultCode']) ? __('moka::payment-three-d.'.$response['ResultCode']) : $response['ResultMessage'],
+            'installment'       => $installment,
+            'three_d'           => 1,
         ];
 
         if ($response['ResultCode'] !== 'Success') {
@@ -121,6 +135,9 @@ class MokaPaymentThreeD extends MokaRequest
         return $this;
     }
 
+    /**
+     * @throws \Tarfin\Moka\Exceptions\MokaBinInquiryException
+     */
     public function getCardInfo(string $cardNumber): array
     {
         $binNumber = substr($cardNumber, 0, 6);

@@ -20,6 +20,8 @@ return new class() extends Migration {
             $table->string('code_for_hash')->nullable();
             $table->unsignedTinyInteger('status')->default(MokaPaymentStatus::PENDING->value);
             $table->decimal('amount', 10, 2);
+            $table->decimal('amount_charged', 10, 2);
+            $table->decimal('amount_commission', 10, 2);
             $table->unsignedTinyInteger('installment')->default(1);
             $table->string('result_code')->nullable();
             $table->string('result_message')->nullable();
