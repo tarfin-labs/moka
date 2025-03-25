@@ -42,8 +42,23 @@ class MokaPaymentThreeD extends MokaRequest
         ?string $language = null,
         ?int $isPreAuth = null,
         string $description = '',
-        string $cardToken = ''
+        string $cardToken = '',
+        int $isIncludedCommissionAmount = 1,
     ): RedirectResponse {
+        $paymentAmount = Moka::paymentAmount()->calculate(
+            binNumber: substr($cardNumber, 0, 6),
+            amount: $amount,
+            installment: $installment,
+            currency: $currency ?? config('moka.currency')
+        );
+
+        $chargedAmount = $isIncludedCommissionAmount === 1
+            ? (float) $paymentAmount['PaymentAmount']
+            : (float) $paymentAmount['DealerDepositAmount'];
+        $commissionAmount = $isIncludedCommissionAmount === 1
+            ? (float) $paymentAmount['PaymentAmount'] - (float) $paymentAmount['DealerDepositAmount']
+            : (float) $paymentAmount['DealerDepositAmount'] - (float) $paymentAmount['PaymentAmount'];
+
         $paymentData = [
             'PaymentDealerRequest' => [
                 'CardHolderFullName' => $cardHolderName,
@@ -51,7 +66,7 @@ class MokaPaymentThreeD extends MokaRequest
                 'ExpMonth'           => $expMonth,
                 'ExpYear'            => $expYear,
                 'CvcNumber'          => $cvc,
-                'Amount'             => $amount,
+                'Amount'             => $chargedAmount,
                 'Currency'           => $currency ?? config('moka.currency'),
                 'InstallmentNumber'  => $installment,
                 'ClientIP'           => request()->ip(),
@@ -75,13 +90,6 @@ class MokaPaymentThreeD extends MokaRequest
 
         $cardInfo = $this->getCardInfo($cardNumber);
 
-        $paymentAmount = Moka::paymentAmount()->calculate(
-            binNumber: substr($cardNumber, 0, 6),
-            amount: $amount,
-            installment: $installment,
-            currency: $currency ?? config('moka.currency')
-        );
-
         $response = $this->sendRequest(self::ENDPOINT_CREATE, $paymentData);
 
         $paymentData = [
@@ -90,8 +98,8 @@ class MokaPaymentThreeD extends MokaRequest
             'card_last_four'    => $cardInfo['card_last_four'],
             'card_holder'       => $cardHolderName,
             'amount'            => $amount,
-            'amount_charged'    => $paymentAmount['PaymentAmount'],
-            'amount_commission' => $paymentAmount['DealerCommissionAmount'],
+            'amount_charged'    => $chargedAmount,
+            'amount_commission' => $commissionAmount,
             'result_code'       => $response['ResultCode'],
             'result_message'    => trans()->has('moka::payment-three-d.'.$response['ResultCode']) ? __('moka::payment-three-d.'.$response['ResultCode']) : $response['ResultMessage'],
             'installment'       => $installment,
