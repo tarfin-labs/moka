@@ -24,7 +24,7 @@ class MokaPaymentDetailList extends MokaRequest
      *
      * @throws MokaPaymentDetailListException
      */
-    public function getDetail(?string $paymentId = null, ?string $otherTrxCode = null): array
+    public function get(?string $paymentId = null, ?string $otherTrxCode = null): array
     {
         if (empty($paymentId) && empty($otherTrxCode)) {
             throw new MokaPaymentDetailListException(

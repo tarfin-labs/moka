@@ -79,7 +79,7 @@ it('can get payment detail list successfully with paymentId', function (): void 
         'https://service.refmoka.com/PaymentDealer/GetDealerPaymentTrxDetailList' => Http::response($mockResponse),
     ]);
 
-    $result = Moka::paymentDetailList()->getDetail('1170');
+    $result = Moka::paymentDetailList()->get('1170');
 
     Http::assertSent(function (Request $request) {
         return $request->url() == 'https://service.refmoka.com/PaymentDealer/GetDealerPaymentTrxDetailList' &&
@@ -152,7 +152,7 @@ it('can get payment detail list successfully with otherTrxCode', function (): vo
         'https://service.refmoka.com/PaymentDealer/GetDealerPaymentTrxDetailList' => Http::response($mockResponse),
     ]);
 
-    $result = Moka::paymentDetailList()->getDetail(null, 'ORDER123');
+    $result = Moka::paymentDetailList()->get(null, 'ORDER123');
 
     Http::assertSent(function (Request $request) {
         return $request->url() == 'https://service.refmoka.com/PaymentDealer/GetDealerPaymentTrxDetailList' &&
@@ -175,7 +175,7 @@ it('throws exception when payment detail list fails', function (): void {
         'https://service.refmoka.com/PaymentDealer/GetDealerPaymentTrxDetailList' => Http::response($mockResponse),
     ]);
 
-    expect(fn () => Moka::paymentDetailList()->getDetail('1170'))
+    expect(fn () => Moka::paymentDetailList()->get('1170'))
         ->toThrow(function (MokaPaymentDetailListException $exception): void {
             expect($exception->getMessage())->toBe(__('moka::payment-detail-list.PaymentDealer.GetDealerPaymentTrxDetailList.InvalidRequest'))
                 ->and($exception->getCode())->toBe('PaymentDealer.GetDealerPaymentTrxDetailList.InvalidRequest');
@@ -189,7 +189,7 @@ it('throws exception when payment detail list fails', function (): void {
 });
 
 it('throws exception when no parameters are provided', function (): void {
-    expect(fn () => Moka::paymentDetailList()->getDetail(null, null))
+    expect(fn () => Moka::paymentDetailList()->get(null, null))
         ->toThrow(function (MokaPaymentDetailListException $exception): void {
             expect($exception->getMessage())->toBe(__('moka::payment-detail-list.MokaPaymentDetailList.InvalidRequest'))
                 ->and($exception->getCode())->toBe('MokaPaymentDetailList.InvalidRequest');
