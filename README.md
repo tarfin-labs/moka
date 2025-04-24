@@ -119,6 +119,7 @@ MOKA_PAYMENT_FAILURE_URL=/moka-payment/failure
 ```
 
 The callback will redirect to these URLs with the following session data:
+
 ```php
 [
     'other_trx_code' => 'other_transaction_id',
@@ -157,18 +158,18 @@ use Illuminate\Queue\InteractsWithQueue;
 class HandleSuccessfulMokaPayment implements ShouldQueue
 {
     use InteractsWithQueue;
-    
+
     /**
      * Handle the event.
      */
     public function handle(MokaPaymentSucceededEvent $event): void
     {
         $payment = $event->mokaPayment;
-        
+
         // Access payment details
         $transactionId = $payment->other_trx_code;
         $amount = $payment->amount;
-        
+
         // Implement your business logic
         // - Complete the order
         // - Generate invoice
@@ -190,19 +191,19 @@ use Illuminate\Queue\InteractsWithQueue;
 class HandleFailedMokaPayment implements ShouldQueue
 {
     use InteractsWithQueue;
-    
+
     /**
      * Handle the event.
      */
     public function handle(MokaPaymentFailedEvent $event): void
     {
         $payment = $event->mokaPayment;
-        
+
         // Access payment details
         $transactionId = $payment->other_trx_code;
         $failureCode = $payment->result_code;
         $failureMessage = $payment->result_message;
-        
+
         // Implement your business logic
         // - Update order status
         // - Notify customer
@@ -323,6 +324,7 @@ $binInfo = Moka::binInquiry()->get('526911');
 ```
 
 The BIN inquiry service provides information about:
+
 - Bank details (name and code)
 - Card type (MASTER/VISA)
 - Credit type (CreditCard/DebitCard)
@@ -395,6 +397,67 @@ The service will return an array containing available installment options and co
     ],
 ],
 ```
+
+### Payment Detail List
+
+You can retrieve detailed information about a payment and its transactions using the `PaymentDetailList` service:
+
+```php
+use Tarfin\Moka\Facades\Moka;
+
+// Get payment details using paymentId
+$paymentDetails = Moka::paymentDetailList()->get('1170');
+
+// Or get payment details using your transaction code
+$paymentDetails = Moka::paymentDetailList()->get(null, 'YOUR_ORDER_CODE_123');
+```
+
+The service will return an array containing both the main payment record and transaction details:
+
+```php
+[
+    'IsSuccessful' => true,
+    'ResultCode' => '00',
+    'ResultMessage' => '',
+    'PaymentDetail' => [
+        'DealerPaymentId' => 27405,
+        'OtherTrxCode' => 'YOUR_ORDER_CODE_123',
+        'CardHolderFullName' => 'John Doe',
+        'CardNumberFirstSix' => '554960',
+        'CardNumberLastFour' => '5523',
+        'PaymentDate' => '2023-06-15T14:42:17.26',
+        'Amount' => 100.00,
+        'RefAmount' => 0.00,
+        'CurrencyCode' => 'TL',
+        'InstallmentNumber' => 0,
+        'DealerCommissionAmount' => 2.50,
+        'IsThreeD' => true,
+        'Description' => 'Payment description',
+        'PaymentStatus' => 2,
+        'TrxStatus' => 1
+    ],
+    'ListItemCount' => 1,
+    'PaymentTrxDetailList' => [
+        [
+            'DealerPaymentTrxId' => 2971,
+            'DealerPaymentId' => 27405,
+            'TrxCode' => '26ba712e-6381-4291-8c59-702c13b30d4d',
+            'TrxDate' => '2023-06-15T14:42:17.837',
+            'Amount' => 100.00,
+            'TrxType' => 2,
+            'TrxStatus' => 1,
+            'PaymentReason' => 1,
+            'VoidRefundReason' => 0,
+            'VirtualPosOrderId' => 'ORDER-23060RYOG07011948',
+            'ResultMessage' => ''
+        ]
+    ]
+]
+```
+
+You must provide either the `paymentId` (Moka's internal payment ID) or `otherTrxCode` (your order/transaction code). If both are null, an exception will be thrown.
+
+If the request fails, a `MokaPaymentDetailListException` will be thrown with the error message and code from Moka.
 
 ## Testing
 
