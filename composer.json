@@ -1,7 +1,6 @@
 {
     "name": "tarfin-labs/moka",
     "description": "Laravel package for Moka Payment integration with 3D Secure support",
-    "version": "0.1.0",
     "type": "library",
     "license": "MIT",
     "autoload": {
