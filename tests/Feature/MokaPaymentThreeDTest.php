@@ -420,3 +420,40 @@ it('can create a 3D secure payment request with partial buyer information', func
         ->toBeInstanceOf(RedirectResponse::class)
         ->and($result->getTargetUrl())->toBe('https://3d-secure-page.com');
 });
+
+it('can create a 3D secure payment request without redirect away', function (): void {
+    Http::fake([
+        'service.refmoka.com/PaymentDealer/DoDirectPaymentThreeD' => Http::response([
+            'ResultCode'    => 'Success',
+            'ResultMessage' => '',
+            'Exception'     => null,
+            'Data'          => [
+                'Url'         => 'https://3d-secure-page.com',
+                'CodeForHash' => 'test-hash-code',
+            ],
+        ]),
+        'service.refmoka.com/PaymentDealer/GetBankCardInformation' => Http::response($this->mockCardInformation),
+        'service.refmoka.com/PaymentDealer/DoCalcPaymentAmount'    => Http::response($this->mockPaymentAmount),
+    ]);
+
+    $payment = app(MokaPaymentThreeD::class);
+
+    $result = $payment->create(
+        amount: 100.00,
+        cardHolderName: 'John Doe',
+        cardNumber: '5555555555555555',
+        expMonth: '12',
+        expYear: '2025',
+        cvc: '123',
+        redirectAway: false
+    );
+
+    expect($result)
+        ->toBeArray()
+        ->toHaveKeys([
+            'Url',
+            'CodeForHash',
+        ])
+        ->and($result['Url'])->toBe('https://3d-secure-page.com')
+        ->and($result['CodeForHash'])->toBe('test-hash-code');
+});
