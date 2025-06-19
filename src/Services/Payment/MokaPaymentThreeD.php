@@ -44,7 +44,8 @@ class MokaPaymentThreeD extends MokaRequest
         string $description = '',
         string $cardToken = '',
         int $isIncludedCommissionAmount = 1,
-    ): RedirectResponse {
+        bool $redirectAway = true
+    ): RedirectResponse|array {
         $paymentAmount = Moka::paymentAmount()->calculate(
             binNumber: substr($cardNumber, 0, 6),
             amount: $amount,
@@ -123,6 +124,10 @@ class MokaPaymentThreeD extends MokaRequest
             'code_for_hash' => $response['Data']['CodeForHash'],
             'status'        => MokaPaymentStatus::PENDING,
         ]));
+
+        if (!$redirectAway) {
+            return $response['Data'];
+        }
 
         return Redirect::away($response['Data']['Url']);
     }
