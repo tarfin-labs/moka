@@ -101,6 +101,22 @@ public function checkoutWithBuyerInfo()
 
     return $result; // Returns RedirectResponse
 }
+
+// Without redirect away if you want to handle the payment in your own view
+public function checkoutMinimal()
+{
+    $result = Moka::threeDPayment()->create(
+        amount: 100.00,
+        cardHolderName: 'John Doe',
+        cardNumber: '5555555555555555',
+        expMonth: '12',
+        expYear: '2025',
+        cvc: '123',
+        redirectAway: false // Set false to not redirect away
+    );
+
+    return $result; // Returns Array with parameters Url and CodeForHash 
+}
 ```
 
 ### Handling the 3D Callback
