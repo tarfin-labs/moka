@@ -47,7 +47,7 @@ class MokaPayment extends Model
         string $hashValue,
         ?string $resultCode,
         ?string $resultMessage,
-        string $trxCode
+        ?string $trxCode
     ): self {
         $successHash = hash('sha256', strtoupper($this->code_for_hash).'T');
         $status      = $hashValue === $successHash
