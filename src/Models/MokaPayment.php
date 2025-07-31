@@ -21,6 +21,8 @@ class MokaPayment extends Model
         'card_holder',
         'card_type',
         'card_last_four',
+        'bank_name',
+        'bank_group_name',
         'code_for_hash',
         'status',
         'amount',
