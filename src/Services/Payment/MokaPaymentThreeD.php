@@ -97,6 +97,8 @@ class MokaPaymentThreeD extends MokaRequest
             'other_trx_code'    => $paymentData['PaymentDealerRequest']['OtherTrxCode'],
             'card_type'         => $cardInfo['card_type'],
             'card_last_four'    => $cardInfo['card_last_four'],
+            'bank_name'         => $cardInfo['bank_name'],
+            'bank_group_name'   => $cardInfo['bank_group_name'],
             'card_holder'       => $cardHolderName,
             'amount'            => $amount,
             'amount_charged'    => $chargedAmount,
@@ -157,8 +159,10 @@ class MokaPaymentThreeD extends MokaRequest
         $response  = Moka::binInquiry()->get($binNumber);
 
         return [
-            'card_type'      => $response['CardType'],
-            'card_last_four' => substr($cardNumber, -4),
+            'card_type'       => $response['CardType'],
+            'card_last_four'  => substr($cardNumber, -4),
+            'bank_name'       => $response['BankName'] ?? null,
+            'bank_group_name' => $response['GroupName'] ?? null,
         ];
     }
 }
