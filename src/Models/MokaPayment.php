@@ -28,6 +28,7 @@ class MokaPayment extends Model
         'amount',
         'amount_charged',
         'amount_commission',
+        'commission_rate',
         'installment',
         'result_code',
         'result_message',
@@ -38,6 +39,7 @@ class MokaPayment extends Model
         'amount'            => 'decimal:2',
         'amount_charged'    => 'decimal:2',
         'amount_commission' => 'decimal:2',
+        'commission_rate'   => 'decimal:2',
     ];
 
     protected static function newFactory(): MokaPaymentFactory

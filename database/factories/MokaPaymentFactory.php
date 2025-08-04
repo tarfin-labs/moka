@@ -23,6 +23,7 @@ class MokaPaymentFactory extends Factory
             'amount'            => $amount,
             'amount_charged'    => $amount * 1.5,
             'amount_commission' => $amount * 0.5,
+            'commission_rate'   => 3.19,
             'result_code'       => '',
             'result_message'    => '',
             'trx_code'          => null,
