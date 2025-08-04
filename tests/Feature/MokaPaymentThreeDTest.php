@@ -295,6 +295,7 @@ it('stores failed payment data in database when enabled in config', function ():
             'card_last_four'  => '5555',
             'bank_name'       => 'FİNANSBANK',
             'bank_group_name' => 'CARDFINANS',
+            'commission_rate' => 2.00,
         ]);
     }
 });

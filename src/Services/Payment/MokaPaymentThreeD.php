@@ -99,6 +99,7 @@ class MokaPaymentThreeD extends MokaRequest
             'card_last_four'    => $cardInfo['card_last_four'],
             'bank_name'         => $cardInfo['bank_name'],
             'bank_group_name'   => $cardInfo['bank_group_name'],
+            'commission_rate'   => $paymentAmount['DealerCommissionRate'],
             'card_holder'       => $cardHolderName,
             'amount'            => $amount,
             'amount_charged'    => $chargedAmount,
