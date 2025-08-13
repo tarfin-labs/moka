@@ -29,7 +29,9 @@ test('getCardInfo returns correct card information', function (): void {
     $result     = Moka::threeDPayment()->getCardInfo($cardNumber);
 
     expect($result)->toBe([
-        'card_type'      => 'MASTER',
-        'card_last_four' => '5555',
+        'card_type'       => 'MASTER',
+        'card_last_four'  => '5555',
+        'bank_name'       => 'FİNANSBANK',
+        'bank_group_name' => 'CARDFINANS',
     ]);
 });

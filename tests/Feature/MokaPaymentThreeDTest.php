@@ -197,8 +197,8 @@ it('throws exception when payment creation fails', function (): void {
         expMonth: '12',
         expYear: '2025',
         cvc: '123',
-        returnUrl: 'https://your-site.com/moka-callback',
-        software: 'Tarfin'
+        software: 'Tarfin',
+        returnUrl: 'https://your-site.com/moka-callback'
     ))->toThrow(function (MokaPaymentThreeDException $exception): void {
         expect($exception->getMessage())->toBe(__('moka::payment-three-d.PaymentDealer.CheckCardInfo.InvalidCardInfo'))
             ->and($exception->getCode())->toBe('PaymentDealer.CheckCardInfo.InvalidCardInfo');
@@ -230,24 +230,26 @@ it('stores payment data in database when payment is successful', function (): vo
         expMonth: '12',
         expYear: '2025',
         cvc: '123',
+        software: 'Tarfin',
         returnUrl: 'https://your-site.com/moka-callback',
         installment: 3,
-        software: 'Tarfin',
         otherTrxCode: $otherTrxCode
     );
 
     $this->assertDatabaseHas('moka_payments', [
-        'other_trx_code' => $otherTrxCode,
-        'code_for_hash'  => 'test-hash-code',
-        'amount'         => 100.00,
-        'installment'    => 3,
-        'status'         => MokaPaymentStatus::PENDING->value,
-        'result_code'    => 'Success',
-        'result_message' => '',
-        'three_d'        => 1,
-        'card_holder'    => 'John Doe',
-        'card_type'      => 'MASTER',
-        'card_last_four' => '5555',
+        'other_trx_code'  => $otherTrxCode,
+        'code_for_hash'   => 'test-hash-code',
+        'amount'          => 100.00,
+        'installment'     => 3,
+        'status'          => MokaPaymentStatus::PENDING->value,
+        'result_code'     => 'Success',
+        'result_message'  => '',
+        'three_d'         => 1,
+        'card_holder'     => 'John Doe',
+        'card_type'       => 'MASTER',
+        'card_last_four'  => '5555',
+        'bank_name'       => 'FİNANSBANK',
+        'bank_group_name' => 'CARDFINANS',
     ]);
 });
 
@@ -282,15 +284,18 @@ it('stores failed payment data in database when enabled in config', function ():
         );
     } catch (MokaPaymentThreeDException $e) {
         $this->assertDatabaseHas('moka_payments', [
-            'other_trx_code' => $otherTrxCode,
-            'amount'         => 100.00,
-            'status'         => MokaPaymentStatus::FAILED->value,
-            'result_code'    => 'PaymentDealer.CheckCardInfo.InvalidCardInfo',
-            'result_message' => __('moka::payment-three-d.PaymentDealer.CheckCardInfo.InvalidCardInfo'),
-            'three_d'        => 1,
-            'card_holder'    => 'John Doe',
-            'card_type'      => 'MASTER',
-            'card_last_four' => '5555',
+            'other_trx_code'  => $otherTrxCode,
+            'amount'          => 100.00,
+            'status'          => MokaPaymentStatus::FAILED->value,
+            'result_code'     => 'PaymentDealer.CheckCardInfo.InvalidCardInfo',
+            'result_message'  => __('moka::payment-three-d.PaymentDealer.CheckCardInfo.InvalidCardInfo'),
+            'three_d'         => 1,
+            'card_holder'     => 'John Doe',
+            'card_type'       => 'MASTER',
+            'card_last_four'  => '5555',
+            'bank_name'       => 'FİNANSBANK',
+            'bank_group_name' => 'CARDFINANS',
+            'commission_rate' => 2.00,
         ]);
     }
 });
