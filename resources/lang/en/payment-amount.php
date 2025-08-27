@@ -10,6 +10,7 @@ return [
     'PaymentDealer.DoCalcPaymentAmount.VirtualPosCommissionRateNotFound'                     => 'Virtual pos commission rate could not be found.',
     'PaymentDealer.DoCalcPaymentAmount.InstallmentNotAvailableForForeignCurrencyTransaction' => 'Installment transaction is not valid for foreign currency.',
     'PaymentDealer.DoCalcPaymentAmount.DealerDoNotBinNumberInquiryAllowed'                   => 'The dealer does not have permission to query Bin number.',
+    'PaymentDealer.DoCalcPaymentAmount.BinNumberNotFound'                                    => 'Bin number not found.',
     'PaymentDealer.DoCalcPaymentAmount.BinNumberMustGiven'                                   => 'The bin number must be given.',
     'PaymentDealer.DoCalcPaymentAmount.BothGroupRevenueRateAndGroupRevenueAmountMustBeZero'  => 'Both the group income ratio and the group income amount must be 0.',
     'EX'                                                                                     => 'An unexpected error has occurred',

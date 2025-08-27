@@ -10,6 +10,7 @@ return [
     'PaymentDealer.DoCalcPaymentAmount.VirtualPosCommissionRateNotFound'                     => 'Sanal pos komisyon oranı bulunamadı.',
     'PaymentDealer.DoCalcPaymentAmount.InstallmentNotAvailableForForeignCurrencyTransaction' => 'Yabancı para birimi için taksit işlemi geçerli değil.',
     'PaymentDealer.DoCalcPaymentAmount.DealerDoNotBinNumberInquiryAllowed'                   => 'Bayinin Bin numarası sorgulama izni yok.',
+    'PaymentDealer.DoCalcPaymentAmount.BinNumberNotFound'                                    => 'Bin numarası bulunamadı.',
     'PaymentDealer.DoCalcPaymentAmount.BinNumberMustGiven'                                   => 'Bin numarası verilmeli.',
     'PaymentDealer.DoCalcPaymentAmount.BothGroupRevenueRateAndGroupRevenueAmountMustBeZero'  => 'Hem grup gelir oranı hem de grup gelir tutarı 0 olmalıdır.',
     'EX'                                                                                     => 'Beklenmeyen bir hata oluştu',
